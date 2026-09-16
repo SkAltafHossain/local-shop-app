@@ -1,0 +1,14 @@
+package com.example.localshop.feature.auth.domain.usecase
+
+import com.example.localshop.core.result.ResultState
+import com.example.localshop.feature.auth.domain.repository.AuthRepository
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+
+class LogoutUseCase @Inject constructor(
+    private val repository: AuthRepository
+) {
+    operator fun invoke(): Flow<ResultState<Unit>> {
+        return repository.logout()
+    }
+}
