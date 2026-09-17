@@ -20,11 +20,12 @@ class ProductRepositoryImpl @Inject constructor(
         emit(ResultState.Loading)
         try {
             val response = productApi.getProducts(
-                category = filters.category,
+                category = filters.categorySlug,
                 minPrice = filters.minPrice,
                 maxPrice = filters.maxPrice,
                 search = filters.search,
                 sort = filters.sort,
+                page = filters.page,
                 perPage = filters.perPage
             )
             if (response.success) {

@@ -1,6 +1,7 @@
 package com.example.localshop.feature.product.data.mapper
 
 import com.example.localshop.feature.product.data.remote.dto.ProductDto
+import com.example.localshop.feature.product.domain.model.Category
 import com.example.localshop.feature.product.domain.model.Product
 
 object ProductMapper {
@@ -22,7 +23,13 @@ object ProductMapper {
             rating = dto.rating,
             reviewsCount = dto.reviewsCount,
             createdAt = dto.createdAt,
-            updatedAt = dto.updatedAt
+            updatedAt = dto.updatedAt,
+            slug = dto.slug,
+            category = dto.category?.let { 
+                Category(it.id, it.name, it.slug) 
+            },
+            featured = dto.isFeaturedAlt,
+            status = dto.status
         )
     }
     

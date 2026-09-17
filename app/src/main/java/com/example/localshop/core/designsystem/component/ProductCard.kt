@@ -226,11 +226,11 @@ fun ProductCard(
                     ) {
                         Text(
                             "ADD TO CART",
-                            fontSize = 11.sp,
+                            fontSize = 10.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
-                    
+
                     // Buy Now button (Blue)
                     androidx.compose.material3.Button(
                         onClick = { onBuyNowClick?.invoke() },
@@ -247,7 +247,7 @@ fun ProductCard(
                     ) {
                         Text(
                             "BUY NOW",
-                            fontSize = 11.sp,
+                            fontSize = 10.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                     }

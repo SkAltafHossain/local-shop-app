@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.localshop.feature.auth.presentation.screen.SplashScreen
 import com.example.localshop.feature.auth.presentation.screen.LoginScreen
 import com.example.localshop.feature.auth.presentation.screen.RegisterScreen
@@ -63,15 +64,24 @@ fun LocalShopNavigation(
         }
         
         composable(Screen.Products.route) {
-            ProductScreen(navController = navController, productType = ProductType.ALL)
+            ProductScreen(
+                navController = navController,
+                productType = ProductType.ALL
+            )
         }
         
         composable(Screen.LatestProducts.route) {
-            ProductScreen(navController = navController, productType = ProductType.LATEST)
+            ProductScreen(
+                navController = navController,
+                productType = ProductType.LATEST
+            )
         }
         
         composable(Screen.FeaturedProducts.route) {
-            ProductScreen(navController = navController, productType = ProductType.FEATURED)
+            ProductScreen(
+                navController = navController,
+                productType = ProductType.FEATURED
+            )
         }
         
         composable(Screen.Categories.route) {

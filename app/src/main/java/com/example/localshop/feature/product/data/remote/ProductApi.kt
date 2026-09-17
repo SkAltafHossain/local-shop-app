@@ -10,12 +10,13 @@ import retrofit2.http.Query
 interface ProductApi {
     @GET("products")
     suspend fun getProducts(
-        @Query("category") category: Int? = null,
+        @Query("category") category: String? = null,
         @Query("min_price") minPrice: Double? = null,
         @Query("max_price") maxPrice: Double? = null,
         @Query("search") search: String? = null,
         @Query("sort") sort: String? = null,
-        @Query("per_page") perPage: Int = 12
+        @Query("page") page: Int = 1,
+        @Query("perpage") perPage: Int = 12
     ): PaginatedResponse<ProductDto>
     
     @GET("products/{id}")
