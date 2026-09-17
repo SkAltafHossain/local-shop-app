@@ -1,6 +1,7 @@
 package com.example.localshop.core.designsystem.component
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -18,6 +19,8 @@ fun AppBar(
     title: String,
     isLoggedIn: Boolean = false,
     onCartClick: () -> Unit = {},
+    onSearchClick: () -> Unit = {},
+    showSearchIcon: Boolean = true,
     cartItemCount: Int = 0,
     modifier: Modifier = Modifier
 ) {
@@ -26,6 +29,14 @@ fun AppBar(
             Text(title)
         },
         actions = {
+            if (showSearchIcon) {
+                IconButton(onClick = onSearchClick) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search"
+                    )
+                }
+            }
             if (isLoggedIn) {
                 IconButton(onClick = onCartClick) {
                     Icon(

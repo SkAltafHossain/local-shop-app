@@ -56,27 +56,49 @@ class MainActivity : ComponentActivity() {
                     )
                     
                     val showBottomNav = currentRoute in bottomNavItems
-                    val showAppBar = currentRoute in bottomNavItems
+                    val showAppBar = currentRoute != Screen.Splash.route
                     
                     // Get title based on current route
                     val appBarTitle = when (currentRoute) {
+                        Screen.Splash.route -> ""
+                        Screen.Login.route -> "Login"
+                        Screen.Register.route -> "Register"
+                        Screen.ForgotPassword.route -> "Forgot Password"
+                        Screen.ResetPassword.route -> "Reset Password"
                         Screen.Home.route -> "Local Shop"
                         Screen.Products.route -> "Products"
+                        Screen.LatestProducts.route -> "Latest Products"
+                        Screen.FeaturedProducts.route -> "Featured Products"
                         Screen.Categories.route -> "Categories"
+                        Screen.Search.route -> "Search"
+                        Screen.ProductDetails.route -> "Product Details"
+                        Screen.Cart.route -> "Cart"
+                        Screen.Wishlist.route -> "Wishlist"
+                        Screen.Checkout.route -> "Checkout"
+                        Screen.AddressManagement.route -> "Address Management"
+                        Screen.OrderHistory.route -> "Order History"
+                        Screen.OrderDetails.route -> "Order Details"
                         Screen.Profile.route -> "Profile"
                         Screen.Settings.route -> "Settings"
+                        Screen.CategoryDetails.route -> "Category Details"
+                        Screen.CategoryProducts.route -> "Category Products"
                         else -> "Local Shop"
                     }
                     
                     Scaffold(
                         topBar = {
                             if (showAppBar) {
+                                val showSearchIcon = currentRoute != Screen.Search.route
                                 AppBar(
                                     title = appBarTitle,
                                     isLoggedIn = isLoggedIn,
                                     onCartClick = {
                                         navController.navigate(Screen.Cart.route)
-                                    }
+                                    },
+                                    onSearchClick = {
+                                        navController.navigate(Screen.Search.route)
+                                    },
+                                    showSearchIcon = showSearchIcon
                                 )
                             }
                         },
