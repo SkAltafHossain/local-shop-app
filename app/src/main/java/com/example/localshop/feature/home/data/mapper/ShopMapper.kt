@@ -10,8 +10,8 @@ import com.example.localshop.feature.home.domain.model.SocialLinks
 object ShopMapper {
     fun mapToDomain(dto: ShopSettingsDto): ShopSettings {
         return ShopSettings(
-            id = dto.id,
-            shopName = dto.shopName,
+            id = dto.id ?: 0,
+            shopName = dto.shopName ?: "",
             shopDescription = dto.shopDescription,
             shopEmail = dto.shopEmail,
             shopPhone = dto.shopPhone,
@@ -29,12 +29,12 @@ object ShopMapper {
     
     fun mapToDomain(dto: ShopInfoDto): ShopInfo {
         return ShopInfo(
-            id = dto.id,
-            name = dto.name,
-            description = dto.description,
-            email = dto.email,
-            phone = dto.phone,
-            address = dto.address,
+            id = dto.id ?: 0,
+            name = dto.shopName ?: "",
+            description = dto.shopDescription,
+            email = dto.shopEmail,
+            phone = dto.shopPhone,
+            address = dto.shopAddress,
             logo = dto.logo,
             coverImage = dto.coverImage,
             socialLinks = dto.socialLinks?.let { mapSocialLinks(it) }

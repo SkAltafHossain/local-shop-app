@@ -4,7 +4,9 @@ import com.example.localshop.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.localshop.feature.auth.domain.repository.AuthRepository
 import com.example.localshop.feature.category.data.repository.CategoryRepositoryImpl
 import com.example.localshop.feature.category.domain.repository.CategoryRepository
+import com.example.localshop.feature.home.data.repository.HomeRepositoryImpl
 import com.example.localshop.feature.home.data.repository.ShopRepositoryImpl
+import com.example.localshop.feature.home.domain.repository.HomeRepository
 import com.example.localshop.feature.home.domain.repository.ShopRepository
 import com.example.localshop.feature.product.data.repository.ProductRepositoryImpl
 import com.example.localshop.feature.product.domain.repository.ProductRepository
@@ -23,6 +25,12 @@ abstract class RepositoryModule {
     abstract fun bindShopRepository(
         shopRepositoryImpl: ShopRepositoryImpl
     ): ShopRepository
+    
+    @Binds
+    @Singleton
+    abstract fun bindHomeRepository(
+        homeRepositoryImpl: HomeRepositoryImpl
+    ): HomeRepository
     
     @Binds
     @Singleton

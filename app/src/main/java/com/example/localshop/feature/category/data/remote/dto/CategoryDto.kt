@@ -32,6 +32,9 @@ data class CategoryDto(
     @SerialName("is_active")
     val isActive: Boolean = true,
     
+    @SerialName("status")
+    val status: String? = null,
+    
     @SerialName("created_at")
     val createdAt: String? = null,
     

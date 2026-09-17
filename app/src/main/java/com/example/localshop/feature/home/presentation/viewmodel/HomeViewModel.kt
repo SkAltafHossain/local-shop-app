@@ -3,11 +3,10 @@ package com.example.localshop.feature.home.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.localshop.core.result.ResultState
+import com.example.localshop.feature.home.domain.usecase.GetHomeDataUseCase
 import com.example.localshop.feature.home.domain.usecase.GetShopInfoUseCase
 import com.example.localshop.feature.home.domain.usecase.GetShopSettingsUseCase
 import com.example.localshop.feature.home.presentation.state.HomeUiState
-import com.example.localshop.feature.product.domain.usecase.GetFeaturedProductsUseCase
-import com.example.localshop.feature.product.domain.usecase.GetLatestProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,8 +18,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getShopSettingsUseCase: GetShopSettingsUseCase,
     private val getShopInfoUseCase: GetShopInfoUseCase,
-    private val getFeaturedProductsUseCase: GetFeaturedProductsUseCase,
-    private val getLatestProductsUseCase: GetLatestProductsUseCase
+    private val getHomeDataUseCase: GetHomeDataUseCase
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -70,33 +68,23 @@ class HomeViewModel @Inject constructor(
                 }
             }
             
-            // Load featured products
-            getFeaturedProductsUseCase(perPage = 8).collect { result ->
+            // Load home data (products, categories, latest, featured)
+            getHomeDataUseCase().collect { result ->
                 when (result) {
                     is ResultState.Success -> {
                         _uiState.value = _uiState.value.copy(
-                            featuredProducts = result.data.items
+                            products = result.data.products,
+                            categories = result.data.categories,
+                            latestProducts = result.data.latestProducts,
+                            featuredProducts = result.data.featuredProducts,
+                            isLoading = false
                         )
                     }
                     is ResultState.Error -> {
-                        _uiState.value = _uiState.value.copy(errorMessage = result.message)
-                    }
-                    ResultState.Loading -> {
-                        // Keep loading state
-                    }
-                }
-            }
-            
-            // Load latest products
-            getLatestProductsUseCase(perPage = 8).collect { result ->
-                when (result) {
-                    is ResultState.Success -> {
                         _uiState.value = _uiState.value.copy(
-                            latestProducts = result.data.items
+                            errorMessage = result.message,
+                            isLoading = false
                         )
-                    }
-                    is ResultState.Error -> {
-                        _uiState.value = _uiState.value.copy(errorMessage = result.message)
                     }
                     ResultState.Loading -> {
                         // Keep loading state

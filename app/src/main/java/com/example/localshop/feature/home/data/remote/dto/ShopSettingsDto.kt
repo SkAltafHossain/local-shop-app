@@ -6,10 +6,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ShopSettingsDto(
     @SerialName("id")
-    val id: Int,
+    val id: Int? = null,
     
     @SerialName("shop_name")
-    val shopName: String,
+    val shopName: String? = null,
     
     @SerialName("shop_description")
     val shopDescription: String? = null,

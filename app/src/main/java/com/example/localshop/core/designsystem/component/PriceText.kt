@@ -19,18 +19,19 @@ fun PriceText(
     modifier: Modifier = Modifier
 ) {
     val currencyFormat = NumberFormat.getCurrencyInstance(Locale.US)
+    currencyFormat.maximumFractionDigits = 0
     
     if (discountPrice != null && discountPrice < price) {
         Row(modifier = modifier) {
             Text(
                 text = currencyFormat.format(discountPrice),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = currencyFormat.format(price),
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textDecoration = TextDecoration.LineThrough
             )
@@ -38,7 +39,7 @@ fun PriceText(
     } else {
         Text(
             text = currencyFormat.format(price),
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
             modifier = modifier
         )

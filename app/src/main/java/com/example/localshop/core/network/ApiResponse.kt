@@ -9,7 +9,7 @@ data class ApiResponse<T>(
     val success: Boolean,
     
     @SerialName("message")
-    val message: String,
+    val message: String? = null,
     
     @SerialName("data")
     val data: T? = null,
@@ -24,7 +24,7 @@ data class PaginatedResponse<T>(
     val success: Boolean,
     
     @SerialName("message")
-    val message: String,
+    val message: String? = null,
     
     @SerialName("data")
     val data: List<T>,

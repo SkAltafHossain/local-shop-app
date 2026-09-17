@@ -6,22 +6,22 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ShopInfoDto(
     @SerialName("id")
-    val id: Int,
+    val id: Int? = null,
     
-    @SerialName("name")
-    val name: String,
+    @SerialName("shop_name")
+    val shopName: String? = null,
     
-    @SerialName("description")
-    val description: String? = null,
+    @SerialName("shop_description")
+    val shopDescription: String? = null,
     
-    @SerialName("email")
-    val email: String? = null,
+    @SerialName("shop_email")
+    val shopEmail: String? = null,
     
-    @SerialName("phone")
-    val phone: String? = null,
+    @SerialName("shop_phone")
+    val shopPhone: String? = null,
     
-    @SerialName("address")
-    val address: String? = null,
+    @SerialName("shop_address")
+    val shopAddress: String? = null,
     
     @SerialName("logo")
     val logo: String? = null,
