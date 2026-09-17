@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -20,12 +21,32 @@ import com.example.localshop.core.designsystem.component.ErrorView
 import com.example.localshop.core.designsystem.component.LoadingIndicator
 import com.example.localshop.feature.product.presentation.viewmodel.ProductViewModel
 
+enum class ProductType {
+    ALL, LATEST, FEATURED
+}
+
 @Composable
 fun ProductScreen(
     navController: NavController,
+    productType: ProductType = ProductType.ALL,
     viewModel: ProductViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    
+    // Load products based on type
+    LaunchedEffect(productType) {
+        when (productType) {
+            ProductType.ALL -> viewModel.loadProducts()
+            ProductType.LATEST -> viewModel.loadLatestProducts()
+            ProductType.FEATURED -> viewModel.loadFeaturedProducts()
+        }
+    }
+    
+    val screenTitle = when (productType) {
+        ProductType.ALL -> "All Products"
+        ProductType.LATEST -> "Latest Products"
+        ProductType.FEATURED -> "Featured Products"
+    }
     
     when {
         uiState.isLoading && uiState.products.isEmpty() -> {
@@ -34,7 +55,13 @@ fun ProductScreen(
         uiState.errorMessage != null && uiState.products.isEmpty() -> {
             ErrorView(
                 message = uiState.errorMessage ?: "",
-                onRetry = { viewModel.loadProducts() }
+                onRetry = { 
+                    when (productType) {
+                        ProductType.ALL -> viewModel.loadProducts()
+                        ProductType.LATEST -> viewModel.loadLatestProducts()
+                        ProductType.FEATURED -> viewModel.loadFeaturedProducts()
+                    }
+                }
             )
         }
         else -> {
@@ -46,7 +73,7 @@ fun ProductScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Products",
+                    text = screenTitle,
                     style = MaterialTheme.typography.headlineMedium
                 )
                 Spacer(modifier = Modifier.height(16.dp))

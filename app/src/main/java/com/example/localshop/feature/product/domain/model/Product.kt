@@ -26,5 +26,7 @@ data class ProductFilters(
     val maxPrice: Double? = null,
     val search: String? = null,
     val sort: String? = null,
+    val isNew: Boolean? = null,
+    val isFeatured: Boolean? = null,
     val perPage: Int = 12
 )

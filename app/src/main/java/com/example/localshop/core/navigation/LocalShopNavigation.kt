@@ -16,6 +16,7 @@ import com.example.localshop.feature.category.presentation.screen.CategoryProduc
 import com.example.localshop.feature.search.presentation.screen.SearchScreen
 import com.example.localshop.feature.product.presentation.screen.ProductDetailsScreen
 import com.example.localshop.feature.product.presentation.screen.ProductScreen
+import com.example.localshop.feature.product.presentation.screen.ProductType
 import com.example.localshop.feature.cart.presentation.screen.CartScreen
 import com.example.localshop.feature.wishlist.presentation.screen.WishlistScreen
 import com.example.localshop.feature.checkout.presentation.screen.CheckoutScreen
@@ -62,7 +63,15 @@ fun LocalShopNavigation(
         }
         
         composable(Screen.Products.route) {
-            ProductScreen(navController = navController)
+            ProductScreen(navController = navController, productType = ProductType.ALL)
+        }
+        
+        composable(Screen.LatestProducts.route) {
+            ProductScreen(navController = navController, productType = ProductType.LATEST)
+        }
+        
+        composable(Screen.FeaturedProducts.route) {
+            ProductScreen(navController = navController, productType = ProductType.FEATURED)
         }
         
         composable(Screen.Categories.route) {

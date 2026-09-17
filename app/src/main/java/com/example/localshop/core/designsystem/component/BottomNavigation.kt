@@ -3,8 +3,8 @@ package com.example.localshop.core.designsystem.component
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Inventory
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -30,7 +30,7 @@ fun BottomNavigation(
 ) {
     val items = listOf(
         BottomNavItem(Screen.Home, Icons.Default.Home, "Home"),
-        BottomNavItem(Screen.Products, Icons.Default.Search, "Products"),
+        BottomNavItem(Screen.Products, Icons.Default.Inventory, "Products"),
         BottomNavItem(Screen.Categories, Icons.Default.Category, "Category"),
         BottomNavItem(Screen.Profile, Icons.Default.Person, "Profile"),
         BottomNavItem(Screen.Settings, Icons.Default.Settings, "Settings")

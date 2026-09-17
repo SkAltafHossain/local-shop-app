@@ -22,14 +22,18 @@ class ProductViewModel @Inject constructor(
     val uiState: StateFlow<ProductUiState> = _uiState.asStateFlow()
     
     init {
-        loadProducts()
+        // Don't load by default - let the screen specify what to load
     }
     
     fun loadProducts() {
+        loadProducts(ProductFilters())
+    }
+    
+    fun loadProducts(filters: ProductFilters) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
             
-            getProductsUseCase(ProductFilters()).collect { result ->
+            getProductsUseCase(filters).collect { result ->
                 when (result) {
                     is ResultState.Success -> {
                         _uiState.value = _uiState.value.copy(
@@ -49,6 +53,14 @@ class ProductViewModel @Inject constructor(
                 }
             }
         }
+    }
+    
+    fun loadLatestProducts() {
+        loadProducts(ProductFilters(isNew = true))
+    }
+    
+    fun loadFeaturedProducts() {
+        loadProducts(ProductFilters(isFeatured = true))
     }
     
     fun clearError() {

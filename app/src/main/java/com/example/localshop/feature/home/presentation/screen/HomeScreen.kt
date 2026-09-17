@@ -205,7 +205,7 @@ fun HomeScreen(
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.clickable {
-                                    navController.navigate(Screen.Products.route)
+                                    navController.navigate(Screen.LatestProducts.route)
                                 }
                             )
                         }
@@ -255,7 +255,7 @@ fun HomeScreen(
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.clickable {
-                                    navController.navigate(Screen.Products.route)
+                                    navController.navigate(Screen.FeaturedProducts.route)
                                 }
                             )
                         }
