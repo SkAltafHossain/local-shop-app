@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.localshop.core.designsystem.component.AppBar
 import com.example.localshop.core.designsystem.component.BottomNavigation
 import com.example.localshop.core.designsystem.theme.LocalShopTheme
 import com.example.localshop.core.navigation.LocalShopNavigation
@@ -48,8 +49,29 @@ class MainActivity : ComponentActivity() {
                     )
                     
                     val showBottomNav = currentRoute in bottomNavItems
+                    val showAppBar = currentRoute in bottomNavItems
+                    
+                    // Get title based on current route
+                    val appBarTitle = when (currentRoute) {
+                        Screen.Home.route -> "Local Shop"
+                        Screen.Products.route -> "Products"
+                        Screen.Categories.route -> "Categories"
+                        Screen.Profile.route -> "Profile"
+                        Screen.Settings.route -> "Settings"
+                        else -> "Local Shop"
+                    }
                     
                     Scaffold(
+                        topBar = {
+                            if (showAppBar) {
+                                AppBar(
+                                    title = appBarTitle,
+                                    onCartClick = {
+                                        navController.navigate(Screen.Cart.route)
+                                    }
+                                )
+                            }
+                        },
                         bottomBar = {
                             if (showBottomNav) {
                                 BottomNavigation(
