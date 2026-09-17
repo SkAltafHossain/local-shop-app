@@ -108,11 +108,10 @@ class MainActivity : ComponentActivity() {
                                     currentRoute = currentRoute ?: Screen.Home.route,
                                     onNavigate = { route ->
                                         navController.navigate(route) {
-                                            popUpTo(navController.graph.startDestinationId) {
-                                                saveState = true
+                                            popUpTo(route) {
+                                                inclusive = true
                                             }
                                             launchSingleTop = true
-                                            restoreState = true
                                         }
                                     }
                                 )
