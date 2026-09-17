@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import com.example.localshop.core.designsystem.theme.AppTheme
 
 @Composable
 fun AppTextField(
@@ -37,10 +38,12 @@ fun AppTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     enabled: Boolean = true
 ) {
+    val colors = AppTheme.colors
+    
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { Text(label) },
+        label = { Text(label, color = colors.secondaryText) },
         modifier = modifier,
         isError = isError || errorMessage != null,
         enabled = enabled,
@@ -56,7 +59,7 @@ fun AppTextField(
                 Icon(
                     imageVector = it,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = colors.onSurface.copy(alpha = 0.6f)
                 )
             }
         },
@@ -70,7 +73,8 @@ fun AppTextField(
                             } else {
                                 Icons.Default.Visibility
                             },
-                            contentDescription = if (isPasswordVisible) "Hide password" else "Show password"
+                            contentDescription = if (isPasswordVisible) "Hide password" else "Show password",
+                            tint = colors.secondaryText
                         )
                     }
                 }
@@ -81,7 +85,7 @@ fun AppTextField(
                         Icon(
                             imageVector = trailingIcon,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            tint = colors.secondaryText
                         )
                     }
                 }
@@ -89,17 +93,23 @@ fun AppTextField(
             else -> null
         },
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            errorContainerColor = MaterialTheme.colorScheme.errorContainer,
-            errorTextColor = MaterialTheme.colorScheme.error
+            focusedContainerColor = colors.surface,
+            unfocusedContainerColor = colors.surface,
+            errorContainerColor = colors.surface,
+            errorTextColor = colors.error,
+            focusedIndicatorColor = colors.primary,
+            unfocusedIndicatorColor = colors.secondaryText,
+            errorIndicatorColor = colors.error,
+            focusedTextColor = colors.primaryText,
+            unfocusedTextColor = colors.primaryText,
+            cursorColor = colors.primary
         )
     )
     
     if (errorMessage != null) {
         Text(
             text = errorMessage,
-            color = MaterialTheme.colorScheme.error,
+            color = colors.error,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
         )

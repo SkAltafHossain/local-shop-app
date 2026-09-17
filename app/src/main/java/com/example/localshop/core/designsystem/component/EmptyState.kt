@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.localshop.core.designsystem.theme.AppTheme
 
 @Composable
 fun EmptyState(
@@ -27,6 +28,8 @@ fun EmptyState(
     onAction: (() -> Unit)? = null,
     actionText: String = "Add"
 ) {
+    val colors = AppTheme.colors
+    
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -39,14 +42,14 @@ fun EmptyState(
             Icon(
                 imageVector = Icons.Default.Inbox,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = colors.otherText,
                 modifier = Modifier.size(64.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = message,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = colors.secondaryText,
                 textAlign = TextAlign.Center
             )
             if (onAction != null) {

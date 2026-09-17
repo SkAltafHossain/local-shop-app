@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.localshop.core.designsystem.theme.AppTheme
 
 @Composable
 fun ErrorView(
@@ -26,6 +27,8 @@ fun ErrorView(
     modifier: Modifier = Modifier,
     onRetry: (() -> Unit)? = null
 ) {
+    val colors = AppTheme.colors
+    
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -38,14 +41,14 @@ fun ErrorView(
             Icon(
                 imageVector = Icons.Default.ErrorOutline,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
+                tint = colors.error,
                 modifier = Modifier.size(64.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = message,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = colors.primaryText,
                 textAlign = TextAlign.Center
             )
             if (onRetry != null) {

@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.localshop.core.designsystem.theme.AppTheme
 
 @Composable
 fun ProductCard(
@@ -51,11 +52,18 @@ fun ProductCard(
     onAddToCartClick: (() -> Unit)? = null,
     onBuyNowClick: (() -> Unit)? = null
 ) {
+    val colors = AppTheme.colors
+
+
+    
     Card(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onProductClick),
         shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = colors.surface
+        ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -87,7 +95,7 @@ fun ProductCard(
                         modifier = Modifier
                             .size(32.dp)
                             .background(
-                                color = Color.White.copy(alpha = 0.9f),
+                                color = colors.surface.copy(alpha = 0.9f),
                                 shape = RoundedCornerShape(16.dp)
                             )
                     ) {
@@ -99,9 +107,9 @@ fun ProductCard(
                             },
                             contentDescription = if (isInWishlist) "Remove from wishlist" else "Add to wishlist",
                             tint = if (isInWishlist) {
-                                Color(0xFFFF6B6B)
+                                colors.error
                             } else {
-                                Color.Gray
+                                colors.onSurface.copy(alpha = 0.6f)
                             },
                             modifier = Modifier.size(18.dp)
                         )
@@ -116,7 +124,7 @@ fun ProductCard(
                             .align(Alignment.TopEnd)
                             .padding(8.dp)
                             .background(
-                                color = Color(0xFFFF6B6B),
+                                color = colors.red,
                                 shape = RoundedCornerShape(4.dp)
                             )
                             .padding(horizontal = 6.dp, vertical = 2.dp)
@@ -124,8 +132,8 @@ fun ProductCard(
                         Text(
                             text = "${discountPercentage}% OFF",
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color.White,
-                            fontSize = 10.sp
+                            color = colors.white,
+                            fontSize = 12.sp
                         )
                     }
                 }
@@ -137,22 +145,11 @@ fun ProductCard(
                     .fillMaxWidth()
                     .padding(10.dp)
             ) {
-                // Brand label
-                Text(
-                    text = "Test",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.Gray,
-                    fontSize = 11.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                
-                Spacer(modifier = Modifier.height(2.dp))
-                
                 // Product name
                 Text(
                     text = name,
                     style = MaterialTheme.typography.titleSmall,
+                    color = colors.primaryText,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -169,7 +166,7 @@ fun ProductCard(
                         Text(
                             text = String.format("%.1f", rating),
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFFFFA500),
+                            color = colors.warning,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium
                         )
@@ -177,7 +174,7 @@ fun ProductCard(
                             Text(
                                 text = " ($reviewCount)",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = Color.Gray,
+                                color = colors.secondaryText,
                                 fontSize = 11.sp
                             )
                         }
@@ -198,7 +195,7 @@ fun ProductCard(
                 Text(
                     text = if (inStock) "In Stock" else "Out of Stock",
                     style = MaterialTheme.typography.labelSmall,
-                    color = if (inStock) Color(0xFF4CAF50) else Color(0xFFF44336),
+                    color = if (inStock) colors.success else colors.error,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -210,13 +207,13 @@ fun ProductCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    // Add to Cart button (Orange)
+                    // Add to Cart button
                     androidx.compose.material3.Button(
                         onClick = { onAddToCartClick?.invoke() },
                         modifier = Modifier.weight(1f),
                         colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFFF9800),
-                            contentColor = Color.White
+                            containerColor = colors.secondaryButton,
+                            contentColor = colors.primaryText
                         ),
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(
                             horizontal = 8.dp,
@@ -231,13 +228,13 @@ fun ProductCard(
                         )
                     }
 
-                    // Buy Now button (Blue)
+                    // Buy Now button
                     androidx.compose.material3.Button(
                         onClick = { onBuyNowClick?.invoke() },
                         modifier = Modifier.weight(1f),
                         colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF2196F3),
-                            contentColor = Color.White
+                            containerColor = colors.primaryButton,
+                            contentColor = colors.primaryText
                         ),
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(
                             horizontal = 8.dp,

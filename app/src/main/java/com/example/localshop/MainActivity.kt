@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.localshop.core.auth.SessionManager
 import com.example.localshop.core.designsystem.component.AppBar
 import com.example.localshop.core.designsystem.component.BottomNavigation
+import com.example.localshop.core.designsystem.theme.AppTheme
 import com.example.localshop.core.designsystem.theme.LocalShopTheme
 import com.example.localshop.core.navigation.LocalShopNavigation
 import com.example.localshop.core.navigation.Screen
@@ -38,9 +39,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LocalShopTheme {
+                val colors = AppTheme.colors
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = colors.pageBackground
                 ) {
                     val navController = rememberNavController()
                     val navBackStackEntry by navController.currentBackStackEntryAsState()

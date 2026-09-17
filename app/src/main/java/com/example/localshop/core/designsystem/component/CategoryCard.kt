@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.localshop.core.designsystem.theme.AppTheme
 
 @Composable
 fun CategoryCard(
@@ -33,12 +34,17 @@ fun CategoryCard(
     modifier: Modifier = Modifier,
     onCategoryClick: () -> Unit = {}
 ) {
+    val colors = AppTheme.colors
+    
     Card(
         modifier = modifier
             .width(100.dp)
             .height(120.dp)
             .clickable(onClick = onCategoryClick),
         shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = colors.surface
+        ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
@@ -49,7 +55,7 @@ fun CategoryCard(
                 modifier = Modifier
                     .size(80.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                    .background(colors.surface.copy(alpha = 0.8f)),
                 contentAlignment = Alignment.Center
             ) {
                 if (imageUrl != null) {
@@ -65,7 +71,7 @@ fun CategoryCard(
                     Text(
                         text = name.firstOrNull()?.toString() ?: "",
                         style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = colors.onSurface.copy(alpha = 0.6f)
                     )
                 }
             }
@@ -75,6 +81,7 @@ fun CategoryCard(
             Text(
                 text = name,
                 style = MaterialTheme.typography.bodySmall,
+                color = colors.primaryText,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center

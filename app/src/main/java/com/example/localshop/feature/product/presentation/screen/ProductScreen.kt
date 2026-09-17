@@ -1,5 +1,6 @@
 package com.example.localshop.feature.product.presentation.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,7 @@ import com.example.localshop.core.designsystem.component.FilterButton
 import com.example.localshop.core.designsystem.component.LoadingIndicator
 import com.example.localshop.core.designsystem.component.ProductCard
 import com.example.localshop.core.designsystem.component.SortDropdown
+import com.example.localshop.core.designsystem.theme.AppTheme
 import com.example.localshop.core.navigation.Screen
 import com.example.localshop.feature.category.domain.model.Category
 import com.example.localshop.feature.product.domain.model.ProductFilters
@@ -60,6 +62,7 @@ fun ProductScreen(
     val uiState by productViewModel.uiState.collectAsState()
     val categoryUiState by categoryViewModel.uiState.collectAsState()
     val gridState = rememberLazyGridState()
+    val colors = AppTheme.colors
 
     // Load categories for filter
     LaunchedEffect(Unit) {
@@ -132,6 +135,7 @@ fun ProductScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(colors.pageBackground)
                     .padding(16.dp)
             ) {
                 // Filter and Sort Row
@@ -197,7 +201,7 @@ fun ProductScreen(
                                     .padding(16.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                CircularProgressIndicator()
+                                CircularProgressIndicator(color = colors.primary)
                             }
                         }
                     }

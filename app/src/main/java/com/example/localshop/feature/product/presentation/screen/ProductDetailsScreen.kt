@@ -1,5 +1,6 @@
 package com.example.localshop.feature.product.presentation.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.example.localshop.core.designsystem.theme.AppTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,6 +30,7 @@ fun ProductDetailsScreen(
     viewModel: ProductDetailsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val colors = AppTheme.colors
     
     LaunchedEffect(productId) {
         viewModel.loadProductDetails(productId.toIntOrNull() ?: 0)
@@ -47,23 +50,27 @@ fun ProductDetailsScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(colors.pageBackground)
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = uiState.product?.name ?: "Product",
-                    style = MaterialTheme.typography.headlineMedium
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = colors.primaryText
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "Price: $${uiState.product?.price}",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colors.secondaryText
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "TODO: Implement full product details UI",
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    color = colors.otherText
                 )
             }
         }

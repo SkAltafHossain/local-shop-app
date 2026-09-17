@@ -11,7 +11,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import com.example.localshop.core.designsystem.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,16 +24,22 @@ fun AppBar(
     cartItemCount: Int = 0,
     modifier: Modifier = Modifier
 ) {
+    val colors = AppTheme.colors
+    
     TopAppBar(
         title = {
-            Text(title)
+            Text(
+                text = title,
+                color = colors.primaryText
+            )
         },
         actions = {
             if (showSearchIcon) {
                 IconButton(onClick = onSearchClick) {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = "Search"
+                        contentDescription = "Search",
+                        tint = colors.primaryText
                     )
                 }
             }
@@ -41,13 +47,14 @@ fun AppBar(
                 IconButton(onClick = onCartClick) {
                     Icon(
                         imageVector = Icons.Default.ShoppingCart,
-                        contentDescription = "Cart"
+                        contentDescription = "Cart",
+                        tint = colors.primaryText
                     )
                 }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0xFF0DD4DB)
+            containerColor = colors.assent
         ),
         modifier = modifier
     )

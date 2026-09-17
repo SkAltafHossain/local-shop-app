@@ -15,16 +15,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.localshop.core.designsystem.theme.AppTheme
 
 @Composable
 fun FilterButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = AppTheme.colors
+    
     OutlinedButton(
         onClick = onClick,
         modifier = modifier,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+        border = BorderStroke(1.dp, colors.primary),
+        colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+            contentColor = colors.primaryText
+        )
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -32,12 +38,12 @@ fun FilterButton(
             Icon(
                 imageVector = Icons.Default.FilterList,
                 contentDescription = "Filter",
-                tint = MaterialTheme.colorScheme.primary
+                tint = colors.primary
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = "Filter",
-                color = MaterialTheme.colorScheme.primary
+                color = colors.primaryText
             )
         }
     }

@@ -1,5 +1,6 @@
 package com.example.localshop.feature.auth.presentation.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import com.example.localshop.core.designsystem.theme.AppTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,23 +27,28 @@ import com.example.localshop.core.designsystem.component.AppTextButton
 fun ResetPasswordScreen(
     navController: NavController
 ) {
+    val colors = AppTheme.colors
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(colors.pageBackground)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "Reset Password",
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineMedium,
+            color = colors.primaryText
         )
         
         Spacer(modifier = Modifier.height(16.dp))
         
         Text(
             text = "TODO: Implement reset password with token from email",
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            color = colors.secondaryText
         )
         
         Spacer(modifier = Modifier.height(32.dp))

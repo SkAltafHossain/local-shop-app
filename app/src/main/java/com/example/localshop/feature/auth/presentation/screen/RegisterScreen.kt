@@ -1,5 +1,6 @@
 package com.example.localshop.feature.auth.presentation.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +26,7 @@ import androidx.navigation.NavController
 import com.example.localshop.core.designsystem.component.AppButton
 import com.example.localshop.core.designsystem.component.AppTextField
 import com.example.localshop.core.designsystem.component.AppTextButton
+import com.example.localshop.core.designsystem.theme.AppTheme
 import com.example.localshop.core.navigation.Screen
 import com.example.localshop.feature.auth.presentation.viewmodel.RegisterViewModel
 
@@ -34,6 +36,7 @@ fun RegisterScreen(
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val colors = AppTheme.colors
     
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
@@ -46,13 +49,15 @@ fun RegisterScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(colors.pageBackground)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "Register",
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineMedium,
+            color = colors.primaryText
         )
         
         Spacer(modifier = Modifier.height(32.dp))
@@ -104,7 +109,7 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = uiState.errorMessage ?: "",
-                color = MaterialTheme.colorScheme.error,
+                color = colors.error,
                 style = MaterialTheme.typography.bodySmall
             )
         }

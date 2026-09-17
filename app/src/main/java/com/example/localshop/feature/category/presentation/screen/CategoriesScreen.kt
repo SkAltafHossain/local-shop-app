@@ -1,5 +1,6 @@
 package com.example.localshop.feature.category.presentation.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.localshop.core.designsystem.component.ErrorView
 import com.example.localshop.core.designsystem.component.LoadingIndicator
+import com.example.localshop.core.designsystem.theme.AppTheme
 import com.example.localshop.feature.category.presentation.viewmodel.CategoriesViewModel
 
 @Composable
@@ -26,6 +28,7 @@ fun CategoriesScreen(
     viewModel: CategoriesViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val colors = AppTheme.colors
     
     when {
         uiState.isLoading && uiState.categories.isEmpty() -> {
@@ -41,23 +44,27 @@ fun CategoriesScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(colors.pageBackground)
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = "Categories",
-                    style = MaterialTheme.typography.headlineMedium
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = colors.primaryText
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "Total Categories: ${uiState.categories.size}",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colors.secondaryText
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "TODO: Implement category list UI",
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    color = colors.otherText
                 )
             }
         }

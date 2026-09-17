@@ -13,12 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.localshop.core.designsystem.theme.AppTheme
 
 @Composable
 fun LoadingIndicator(
     modifier: Modifier = Modifier,
     message: String? = null
 ) {
+    val colors = AppTheme.colors
+    
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -29,12 +32,13 @@ fun LoadingIndicator(
         ) {
             CircularProgressIndicator(
                 modifier = Modifier.size(48.dp),
-                color = MaterialTheme.colorScheme.primary
+                color = colors.primary
             )
             if (message != null) {
                 Text(
                     text = message,
                     style = MaterialTheme.typography.bodyMedium,
+                    color = colors.secondaryText,
                     modifier = Modifier.padding(top = 16.dp)
                 )
             }
@@ -46,9 +50,11 @@ fun LoadingIndicator(
 fun SmallLoadingIndicator(
     modifier: Modifier = Modifier
 ) {
+    val colors = AppTheme.colors
+    
     CircularProgressIndicator(
         modifier = modifier.size(24.dp),
-        color = MaterialTheme.colorScheme.primary,
+        color = colors.primary,
         strokeWidth = 2.dp
     )
 }

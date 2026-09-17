@@ -1,5 +1,6 @@
 package com.example.localshop.feature.auth.presentation.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.example.localshop.core.designsystem.theme.AppTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +24,8 @@ import kotlinx.coroutines.delay
 fun SplashScreen(
     navController: NavController
 ) {
+    val colors = AppTheme.colors
+    
     LaunchedEffect(Unit) {
         delay(2000) // Show splash for 2 seconds
         // TODO: Check if user is logged in and navigate accordingly
@@ -31,14 +35,16 @@ fun SplashScreen(
     }
     
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.pageBackground),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "Local Shop",
             style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary
+            color = colors.primary
         )
         Spacer(modifier = Modifier.height(24.dp))
         SmallLoadingIndicator(

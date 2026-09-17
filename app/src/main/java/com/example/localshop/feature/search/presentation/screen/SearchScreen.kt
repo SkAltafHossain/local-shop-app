@@ -1,5 +1,6 @@
 package com.example.localshop.feature.search.presentation.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.example.localshop.core.designsystem.theme.AppTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -26,22 +28,26 @@ fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val colors = AppTheme.colors
     
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(colors.pageBackground)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "Search Screen",
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineMedium,
+            color = colors.primaryText
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "TODO: Implement search UI with text field and results",
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            color = colors.secondaryText
         )
         Spacer(modifier = Modifier.height(8.dp))
         if (uiState.searchResults.isNotEmpty()) {

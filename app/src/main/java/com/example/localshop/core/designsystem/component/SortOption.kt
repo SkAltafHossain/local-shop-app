@@ -1,5 +1,6 @@
 package com.example.localshop.core.designsystem.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.localshop.core.designsystem.theme.AppTheme
 
 data class SortOption(
     val value: String,
@@ -34,6 +36,7 @@ fun SortDropdown(
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
+    val colors = AppTheme.colors
     
     val sortOptions = listOf(
         SortOption("price_low", "Price: Low to High"),
@@ -53,25 +56,31 @@ fun SortDropdown(
     ) {
         Text(
             text = selectedLabel,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            color = colors.primaryText
         )
         Spacer(modifier = Modifier.width(4.dp))
         Icon(
             imageVector = Icons.Default.ArrowDropDown,
             contentDescription = "Sort options",
-            tint = MaterialTheme.colorScheme.primary
+            tint = colors.primary
         )
     }
-
+    
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = { expanded = false },
-        modifier = Modifier.fillMaxWidth(0.9f)
+        modifier = Modifier
+            .fillMaxWidth(0.9f)
+            .background(colors.surface)
     ) {
         sortOptions.forEach { option ->
             DropdownMenuItem(
                 text = {
-                    Text(option.label)
+                    Text(
+                        text = option.label,
+                        color = colors.primaryText
+                    )
                 },
                 onClick = {
                     onSortSelected(option.value)

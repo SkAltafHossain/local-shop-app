@@ -12,8 +12,8 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.localshop.core.designsystem.theme.AppTheme
 import com.example.localshop.core.navigation.Screen
 
 data class BottomNavItem(
@@ -28,6 +28,7 @@ fun BottomNavigation(
     onNavigate: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = AppTheme.colors
     val items = listOf(
         BottomNavItem(Screen.Home, Icons.Default.Home, "Home"),
         BottomNavItem(Screen.Products, Icons.Default.Inventory, "Products"),
@@ -37,7 +38,7 @@ fun BottomNavigation(
     )
 
     NavigationBar(
-        containerColor = Color(0xFF0DD4DB),
+        containerColor = colors.assent,
         modifier = modifier
     ) {
         items.forEach { item ->
@@ -47,11 +48,15 @@ fun BottomNavigation(
                 icon = {
                     Icon(
                         imageVector = item.icon,
-                        contentDescription = item.label
+                        contentDescription = item.label,
+                        tint = if (currentRoute == item.screen.route) colors.primaryText else colors.primaryText
                     )
                 },
                 label = {
-                    Text(item.label)
+                    Text(
+                        text = item.label,
+                        color = if (currentRoute == item.screen.route) colors.primaryText else colors.primaryText
+                    )
                 }
             )
         }

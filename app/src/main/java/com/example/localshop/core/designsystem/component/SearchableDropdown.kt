@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.localshop.core.designsystem.theme.AppTheme
 import com.example.localshop.feature.category.domain.model.Category
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,6 +46,7 @@ fun SearchableCategoryDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
+    val colors = AppTheme.colors
 
     val selectedCategory = categories.find { it.id == selectedCategoryId }
     val displayText = selectedCategory?.name ?: "All Categories"
@@ -67,13 +69,14 @@ fun SearchableCategoryDropdown(
     ) {
         Text(
             text = displayText,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            color = colors.primaryText
         )
         Spacer(modifier = Modifier.width(4.dp))
         Icon(
             imageVector = Icons.Default.ArrowDropDown,
             contentDescription = "Select category",
-            tint = MaterialTheme.colorScheme.primary
+            tint = colors.primary
         )
     }
 
@@ -107,6 +110,7 @@ fun SearchableCategoryDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
+    val colors = AppTheme.colors
 
     val selectedCategory = categories.find { it.slug == selectedCategorySlug }
     val displayText = selectedCategory?.name ?: "All Categories"
@@ -129,13 +133,14 @@ fun SearchableCategoryDropdown(
     ) {
         Text(
             text = displayText,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            color = colors.primaryText
         )
         Spacer(modifier = Modifier.width(4.dp))
         Icon(
             imageVector = Icons.Default.ArrowDropDown,
             contentDescription = "Select category",
-            tint = MaterialTheme.colorScheme.primary
+            tint = colors.primary
         )
     }
 
@@ -170,6 +175,8 @@ private fun CategorySelectionDialog(
     onCategorySelected: (Int?) -> Unit,
     onDismiss: () -> Unit
 ) {
+    val colors = AppTheme.colors
+    
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -182,6 +189,9 @@ private fun CategorySelectionDialog(
                 .fillMaxWidth()
                 .padding(16.dp),
             shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = colors.surface
+            ),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
             Column(
@@ -191,7 +201,8 @@ private fun CategorySelectionDialog(
             ) {
                 Text(
                     text = "Select Category",
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
+                    color = colors.primaryText
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -201,14 +212,24 @@ private fun CategorySelectionDialog(
                     value = searchQuery,
                     onValueChange = onSearchQueryChange,
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("Search categories...") },
+                    placeholder = { Text("Search categories...", color = colors.otherText) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = "Search"
+                            contentDescription = "Search",
+                            tint = colors.secondaryText
                         )
                     },
-                    singleLine = true
+                    singleLine = true,
+                    colors = androidx.compose.material3.TextFieldDefaults.colors(
+                        focusedContainerColor = colors.surface,
+                        unfocusedContainerColor = colors.surface,
+                        focusedIndicatorColor = colors.primary,
+                        unfocusedIndicatorColor = colors.secondaryText,
+                        focusedTextColor = colors.primaryText,
+                        unfocusedTextColor = colors.primaryText,
+                        cursorColor = colors.primary
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -242,7 +263,7 @@ private fun CategorySelectionDialog(
                             Text(
                                 text = "No categories found",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                color = colors.secondaryText,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(16.dp)
@@ -266,6 +287,8 @@ private fun CategorySelectionDialog(
     onCategorySelected: (String?) -> Unit,
     onDismiss: () -> Unit
 ) {
+    val colors = AppTheme.colors
+    
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -278,6 +301,9 @@ private fun CategorySelectionDialog(
                 .fillMaxWidth()
                 .padding(16.dp),
             shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = colors.surface
+            ),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
             Column(
@@ -287,7 +313,8 @@ private fun CategorySelectionDialog(
             ) {
                 Text(
                     text = "Select Category",
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
+                    color = colors.primaryText
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -297,14 +324,24 @@ private fun CategorySelectionDialog(
                     value = searchQuery,
                     onValueChange = onSearchQueryChange,
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("Search categories...") },
+                    placeholder = { Text("Search categories...", color = colors.otherText) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = "Search"
+                            contentDescription = "Search",
+                            tint = colors.secondaryText
                         )
                     },
-                    singleLine = true
+                    singleLine = true,
+                    colors = androidx.compose.material3.TextFieldDefaults.colors(
+                        focusedContainerColor = colors.surface,
+                        unfocusedContainerColor = colors.surface,
+                        focusedIndicatorColor = colors.primary,
+                        unfocusedIndicatorColor = colors.secondaryText,
+                        focusedTextColor = colors.primaryText,
+                        unfocusedTextColor = colors.primaryText,
+                        cursorColor = colors.primary
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -338,7 +375,7 @@ private fun CategorySelectionDialog(
                             Text(
                                 text = "No categories found",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                color = colors.secondaryText,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(16.dp)
@@ -357,6 +394,8 @@ private fun CategoryListItem(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+    val colors = AppTheme.colors
+    
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -368,9 +407,9 @@ private fun CategoryListItem(
             text = name,
             style = MaterialTheme.typography.bodyMedium,
             color = if (isSelected) {
-                MaterialTheme.colorScheme.primary
+                colors.primary
             } else {
-                MaterialTheme.colorScheme.onSurface
+                colors.primaryText
             },
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

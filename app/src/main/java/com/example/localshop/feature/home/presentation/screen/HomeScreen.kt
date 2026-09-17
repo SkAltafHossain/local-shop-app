@@ -1,6 +1,7 @@
 package com.example.localshop.feature.home.presentation.screen
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,7 @@ import com.example.localshop.core.designsystem.component.CategoryCard
 import com.example.localshop.core.designsystem.component.ErrorView
 import com.example.localshop.core.designsystem.component.LoadingIndicator
 import com.example.localshop.core.designsystem.component.ProductCard
+import com.example.localshop.core.designsystem.theme.AppTheme
 import com.example.localshop.core.navigation.Screen
 import com.example.localshop.feature.home.presentation.viewmodel.HomeViewModel
 
@@ -37,6 +39,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val colors = AppTheme.colors
     
     when {
         uiState.isLoading && uiState.shopSettings == null -> {
@@ -52,6 +55,7 @@ fun HomeScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(colors.pageBackground)
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -66,12 +70,14 @@ fun HomeScreen(
                             Text(
                                 text = "Categories",
                                 style = MaterialTheme.typography.titleLarge,
+                                color = colors.primaryText,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
                                 text = "See All",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = colors.primary,
+                                fontWeight = FontWeight.Bold,
                                 modifier = Modifier.clickable {
                                     navController.navigate(Screen.Categories.route)
                                 }
@@ -111,12 +117,14 @@ fun HomeScreen(
                             Text(
                                 text = "Products",
                                 style = MaterialTheme.typography.titleLarge,
+                                color = colors.primaryText,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
                                 text = "See All",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = colors.primary,
+                                fontWeight = FontWeight.Bold,
                                 modifier = Modifier.clickable {
                                     navController.navigate(Screen.Products.route)
                                 }
@@ -161,12 +169,14 @@ fun HomeScreen(
                             Text(
                                 text = "Latest Products",
                                 style = MaterialTheme.typography.titleLarge,
+                                color = colors.primaryText,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
                                 text = "See All",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = colors.primary,
+                                fontWeight = FontWeight.Bold,
                                 modifier = Modifier.clickable {
                                     navController.navigate(Screen.LatestProducts.route)
                                 }
@@ -211,12 +221,14 @@ fun HomeScreen(
                             Text(
                                 text = "Featured Products",
                                 style = MaterialTheme.typography.titleLarge,
+                                color = colors.primary,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
                                 text = "See All",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = colors.secondaryText,
+                                fontWeight = FontWeight.Bold,
                                 modifier = Modifier.clickable {
                                     navController.navigate(Screen.FeaturedProducts.route)
                                 }
