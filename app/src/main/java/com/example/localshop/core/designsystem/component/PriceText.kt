@@ -22,13 +22,16 @@ fun PriceText(
     currencyFormat.maximumFractionDigits = 0
     
     if (discountPrice != null && discountPrice < price) {
-        Row(modifier = modifier) {
+        Row(
+            modifier = modifier,
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+        ) {
             Text(
                 text = currencyFormat.format(discountPrice),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(6.dp))
             Text(
                 text = currencyFormat.format(price),
                 style = MaterialTheme.typography.bodySmall,

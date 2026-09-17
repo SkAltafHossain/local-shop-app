@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 @Composable
 fun AppBar(
     title: String,
+    isLoggedIn: Boolean = false,
     onCartClick: () -> Unit = {},
     cartItemCount: Int = 0,
     modifier: Modifier = Modifier
@@ -25,11 +26,13 @@ fun AppBar(
             Text(title)
         },
         actions = {
-            IconButton(onClick = onCartClick) {
-                Icon(
-                    imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = "Cart"
-                )
+            if (isLoggedIn) {
+                IconButton(onClick = onCartClick) {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = "Cart"
+                    )
+                }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(

@@ -1,7 +1,7 @@
 package com.example.localshop.core.common
 
 object Constants {
-    const val BASE_URL = "http://0.0.0.0:8001/api/"
+    const val BASE_URL = "http://10.65.253.252:8001/api/"
     const val PREF_NAME = "localshop_prefs"
     const val KEY_AUTH_TOKEN = "auth_token"
     const val KEY_USER_ID = "user_id"

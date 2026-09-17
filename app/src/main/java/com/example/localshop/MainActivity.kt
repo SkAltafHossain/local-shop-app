@@ -12,21 +12,27 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.localshop.core.auth.SessionManager
 import com.example.localshop.core.designsystem.component.AppBar
 import com.example.localshop.core.designsystem.component.BottomNavigation
 import com.example.localshop.core.designsystem.theme.LocalShopTheme
 import com.example.localshop.core.navigation.LocalShopNavigation
 import com.example.localshop.core.navigation.Screen
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var sessionManager: SessionManager
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -39,6 +45,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentRoute = navBackStackEntry?.destination?.route
+                    val isLoggedIn by sessionManager.isLoggedIn.collectAsState(initial = false)
                     
                     val bottomNavItems = listOf(
                         Screen.Home.route,
@@ -66,6 +73,7 @@ class MainActivity : ComponentActivity() {
                             if (showAppBar) {
                                 AppBar(
                                     title = appBarTitle,
+                                    isLoggedIn = isLoggedIn,
                                     onCartClick = {
                                         navController.navigate(Screen.Cart.route)
                                     }
