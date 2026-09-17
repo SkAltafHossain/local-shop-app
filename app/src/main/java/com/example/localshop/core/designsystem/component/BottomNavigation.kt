@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -57,7 +58,14 @@ fun BottomNavigation(
                         text = item.label,
                         color = if (currentRoute == item.screen.route) colors.primaryText else colors.primaryText
                     )
-                }
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = colors.primaryText,
+                    unselectedIconColor = colors.primaryText,
+                    selectedTextColor = colors.primaryText,
+                    unselectedTextColor = colors.primaryText,
+                    indicatorColor = colors.indicator
+                )
             )
         }
     }

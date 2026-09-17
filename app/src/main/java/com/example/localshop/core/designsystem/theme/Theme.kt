@@ -27,6 +27,7 @@ data class AppColors(
     val success: Color,
     val warning: Color,
     val assent: Color,
+    val indicator: Color,
     val white: Color,
     val black: Color,
     val red: Color
@@ -48,6 +49,7 @@ val LightAppColors = AppColors(
     success = LightSuccess,
     warning = LightWarning,
     assent = LightAssent,
+    indicator = LightIndicator,
     white = White,
     black = Black,
     red = Red
@@ -69,6 +71,7 @@ val DarkAppColors = AppColors(
     success = DarkSuccess,
     warning = DarkWarning,
     assent = DarkAssent,
+    indicator = DarkIndicator,
     white = White,
     black = Black,
     red = Red
