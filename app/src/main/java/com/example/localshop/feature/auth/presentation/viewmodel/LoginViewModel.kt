@@ -30,6 +30,10 @@ class LoginViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(password = password)
     }
     
+    fun togglePasswordVisibility() {
+        _uiState.value = _uiState.value.copy(isPasswordVisible = !_uiState.value.isPasswordVisible)
+    }
+    
     fun login() {
         val email = _uiState.value.email.trim()
         val password = _uiState.value.password

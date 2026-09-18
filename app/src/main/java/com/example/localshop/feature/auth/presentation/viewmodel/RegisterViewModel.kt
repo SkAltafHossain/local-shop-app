@@ -38,6 +38,14 @@ class RegisterViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(passwordConfirmation = passwordConfirmation)
     }
     
+    fun togglePasswordVisibility() {
+        _uiState.value = _uiState.value.copy(isPasswordVisible = !_uiState.value.isPasswordVisible)
+    }
+    
+    fun togglePasswordConfirmationVisibility() {
+        _uiState.value = _uiState.value.copy(isPasswordConfirmationVisible = !_uiState.value.isPasswordConfirmationVisible)
+    }
+    
     fun register() {
         val name = _uiState.value.name.trim()
         val email = _uiState.value.email.trim()
