@@ -3,7 +3,7 @@ package com.example.localshop.feature.product.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.localshop.core.result.ResultState
-import com.example.localshop.feature.product.domain.usecase.GetProductDetailsUseCase
+import com.example.localshop.feature.product.domain.usecase.GetProductWithRelatedUseCase
 import com.example.localshop.feature.product.presentation.state.ProductDetailsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProductDetailsViewModel @Inject constructor(
-    private val getProductDetailsUseCase: GetProductDetailsUseCase
+    private val getProductWithRelatedUseCase: GetProductWithRelatedUseCase
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(ProductDetailsUiState())
@@ -24,11 +24,11 @@ class ProductDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             
-            getProductDetailsUseCase(productId).collect { result ->
+            getProductWithRelatedUseCase(productId).collect { result ->
                 when (result) {
                     is ResultState.Success -> {
                         _uiState.value = _uiState.value.copy(
-                            product = result.data,
+                            productDetails = result.data,
                             isLoading = false
                         )
                     }
@@ -43,6 +43,12 @@ class ProductDetailsViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+    
+    fun refresh() {
+        _uiState.value.productDetails?.product?.id?.let { productId ->
+            loadProductDetails(productId)
         }
     }
 }

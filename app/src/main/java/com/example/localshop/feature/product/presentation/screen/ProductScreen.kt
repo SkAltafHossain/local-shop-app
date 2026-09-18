@@ -1,7 +1,6 @@
 package com.example.localshop.feature.product.presentation.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -183,13 +182,12 @@ fun ProductScreen(
                             rating = product.rating,
                             reviewCount = product.reviewsCount,
                             inStock = (product.stock ?: 0) > 0,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    navController.navigate(
-                                        Screen.ProductDetails.createRoute(product.id)
-                                    )
-                                }
+                            modifier = Modifier.fillMaxWidth(),
+                            onProductClick = {
+                                navController.navigate(
+                                    Screen.ProductDetails.createRoute(product.id)
+                                )
+                            }
                         )
                     }
                     

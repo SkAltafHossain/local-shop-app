@@ -3,6 +3,7 @@ package com.example.localshop.feature.product.data.remote
 import com.example.localshop.core.network.ApiResponse
 import com.example.localshop.core.network.PaginatedResponse
 import com.example.localshop.feature.product.data.remote.dto.ProductDto
+import com.example.localshop.feature.product.data.remote.dto.ProductDetailsDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -21,6 +22,9 @@ interface ProductApi {
     
     @GET("products/{id}")
     suspend fun getProductDetails(@Path("id") productId: Int): ApiResponse<ProductDto>
+    
+    @GET("products/{id}")
+    suspend fun getProductWithRelated(@Path("id") productId: Int): ApiResponse<ProductDetailsDto>
     
     @GET("products/search")
     suspend fun searchProducts(

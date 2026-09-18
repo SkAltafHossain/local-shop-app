@@ -3,9 +3,11 @@ package com.example.localshop.feature.product.data.repository
 import com.example.localshop.core.error.ErrorMapper
 import com.example.localshop.core.result.PagedResult
 import com.example.localshop.core.result.ResultState
+import com.example.localshop.feature.product.data.mapper.ProductDetailsMapper
 import com.example.localshop.feature.product.data.mapper.ProductMapper
 import com.example.localshop.feature.product.data.remote.ProductApi
 import com.example.localshop.feature.product.domain.model.Product
+import com.example.localshop.feature.product.domain.model.ProductDetails
 import com.example.localshop.feature.product.domain.model.ProductFilters
 import com.example.localshop.feature.product.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
@@ -56,6 +58,22 @@ class ProductRepositoryImpl @Inject constructor(
             if (response.success && response.data != null) {
                 val product = ProductMapper.mapToDomain(response.data)
                 emit(ResultState.Success(product))
+            } else {
+                emit(ResultState.Error(response.message ?: "Operation failed"))
+            }
+        } catch (e: Exception) {
+            val appError = ErrorMapper.mapToAppError(e)
+            emit(ResultState.Error(appError.localizedMessage ?: appError.toString(), appError))
+        }
+    }
+    
+    override fun getProductWithRelated(productId: Int): Flow<ResultState<ProductDetails>> = flow {
+        emit(ResultState.Loading)
+        try {
+            val response = productApi.getProductWithRelated(productId)
+            if (response.success && response.data != null) {
+                val productDetails = ProductDetailsMapper.mapToDomain(response.data)
+                emit(ResultState.Success(productDetails))
             } else {
                 emit(ResultState.Error(response.message ?: "Operation failed"))
             }
