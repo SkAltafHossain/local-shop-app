@@ -14,7 +14,7 @@ object CategoryMapper {
             parentId = dto.parentId,
             parentName = dto.parentName,
             productsCount = dto.productsCount,
-            isActive = dto.status == "active" || dto.isActive,
+            status = dto.status,
             createdAt = dto.createdAt,
             updatedAt = dto.updatedAt
         )

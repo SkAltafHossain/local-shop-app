@@ -83,7 +83,6 @@ class MainActivity : ComponentActivity() {
                         Screen.Profile.route -> "Profile"
                         Screen.Settings.route -> "Settings"
                         Screen.CategoryDetails.route -> "Category Details"
-                        Screen.CategoryProducts.route -> "Category Products"
                         else -> "Local Shop"
                     }
                     

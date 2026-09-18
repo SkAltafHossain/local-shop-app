@@ -29,9 +29,6 @@ data class CategoryDto(
     @SerialName("products_count")
     val productsCount: Int? = null,
     
-    @SerialName("is_active")
-    val isActive: Boolean = true,
-    
     @SerialName("status")
     val status: String? = null,
     

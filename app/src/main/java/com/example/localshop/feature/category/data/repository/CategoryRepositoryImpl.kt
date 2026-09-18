@@ -4,8 +4,10 @@ import com.example.localshop.core.error.ErrorMapper
 import com.example.localshop.core.result.PagedResult
 import com.example.localshop.core.result.ResultState
 import com.example.localshop.feature.category.data.mapper.CategoryMapper
+import com.example.localshop.feature.category.data.mapper.CategoryWithProductsMapper
 import com.example.localshop.feature.category.data.remote.CategoryApi
 import com.example.localshop.feature.category.domain.model.Category
+import com.example.localshop.feature.category.domain.model.CategoryWithProducts
 import com.example.localshop.feature.category.domain.repository.CategoryRepository
 import com.example.localshop.feature.product.data.mapper.ProductMapper
 import com.example.localshop.feature.product.domain.model.Product
@@ -65,6 +67,22 @@ class CategoryRepositoryImpl @Inject constructor(
                     to = response.pagination.to
                 )
                 emit(ResultState.Success(pagedResult))
+            } else {
+                emit(ResultState.Error(response.message ?: "Operation failed"))
+            }
+        } catch (e: Exception) {
+            val appError = ErrorMapper.mapToAppError(e)
+            emit(ResultState.Error(appError.localizedMessage ?: appError.toString(), appError))
+        }
+    }
+    
+    override fun getCategoryWithProducts(categoryId: Int, perPage: Int): Flow<ResultState<CategoryWithProducts>> = flow {
+        emit(ResultState.Loading)
+        try {
+            val response = categoryApi.getCategoryWithProducts(categoryId, perPage)
+            if (response.success && response.data != null) {
+                val categoryWithProducts = CategoryWithProductsMapper.mapToDomain(response.data)
+                emit(ResultState.Success(categoryWithProducts))
             } else {
                 emit(ResultState.Error(response.message ?: "Operation failed"))
             }

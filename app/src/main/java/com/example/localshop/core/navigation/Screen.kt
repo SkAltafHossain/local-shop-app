@@ -33,7 +33,4 @@ sealed class Screen(val route: String) {
     data object CategoryDetails : Screen("category_details/{categoryId}") {
         fun createRoute(categoryId: Int) = "category_details/$categoryId"
     }
-    data object CategoryProducts : Screen("category_products/{categoryId}") {
-        fun createRoute(categoryId: Int) = "category_products/$categoryId"
-    }
 }

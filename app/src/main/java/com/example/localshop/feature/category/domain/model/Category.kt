@@ -9,7 +9,7 @@ data class Category(
     val parentId: Int? = null,
     val parentName: String? = null,
     val productsCount: Int? = null,
-    val isActive: Boolean = true,
+    val status: String? = null,
     val createdAt: String? = null,
     val updatedAt: String? = null
 )

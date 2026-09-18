@@ -13,7 +13,6 @@ import com.example.localshop.feature.auth.presentation.screen.ResetPasswordScree
 import com.example.localshop.feature.home.presentation.screen.HomeScreen
 import com.example.localshop.feature.category.presentation.screen.CategoriesScreen
 import com.example.localshop.feature.category.presentation.screen.CategoryDetailsScreen
-import com.example.localshop.feature.category.presentation.screen.CategoryProductsScreen
 import com.example.localshop.feature.search.presentation.screen.SearchScreen
 import com.example.localshop.feature.product.presentation.screen.ProductDetailsScreen
 import com.example.localshop.feature.product.presentation.screen.ProductScreen
@@ -133,11 +132,6 @@ fun LocalShopNavigation(
         composable(Screen.CategoryDetails.route) { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
             CategoryDetailsScreen(navController = navController, categoryId = categoryId)
-        }
-        
-        composable(Screen.CategoryProducts.route) { backStackEntry ->
-            val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
-            CategoryProductsScreen(navController = navController, categoryId = categoryId)
         }
     }
 }
