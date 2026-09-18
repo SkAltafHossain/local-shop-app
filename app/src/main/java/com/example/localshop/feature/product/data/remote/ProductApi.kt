@@ -28,7 +28,7 @@ interface ProductApi {
     
     @GET("products/search")
     suspend fun searchProducts(
-        @Query("q") query: String,
+        @Query("query") query: String,
         @Query("per_page") perPage: Int = 12
     ): PaginatedResponse<ProductDto>
     
