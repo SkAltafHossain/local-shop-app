@@ -97,7 +97,7 @@ fun HomeScreen(
                                     modifier = Modifier.width(100.dp),
                                     onCategoryClick = {
                                         navController.navigate(
-                                            Screen.CategoryProducts.createRoute(category.id)
+                                            Screen.CategoryDetails.createRoute(category.id)
                                         )
                                     }
                                 )
