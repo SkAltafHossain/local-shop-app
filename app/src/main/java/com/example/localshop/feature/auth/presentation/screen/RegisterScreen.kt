@@ -1,11 +1,5 @@
 package com.example.localshop.feature.auth.presentation.screen
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -47,6 +42,7 @@ import com.example.localshop.core.designsystem.component.AppButton
 import com.example.localshop.core.designsystem.component.AppGradientButton
 import com.example.localshop.core.designsystem.component.AppTextField
 import com.example.localshop.core.designsystem.component.AppTextButton
+import com.example.localshop.core.designsystem.component.ErrorModal
 import com.example.localshop.core.designsystem.theme.AppTheme
 import com.example.localshop.core.navigation.Screen
 import com.example.localshop.feature.auth.presentation.viewmodel.RegisterViewModel
@@ -150,7 +146,6 @@ fun RegisterScreen(
                         onValueChange = { viewModel.onNameChanged(it) },
                         label = "Full Name",
                         leadingIcon = Icons.Default.Person,
-                        isError = uiState.errorMessage != null,
                         modifier = Modifier.fillMaxWidth()
                     )
                     
@@ -163,7 +158,18 @@ fun RegisterScreen(
                         label = "Email Address",
                         keyboardType = KeyboardType.Email,
                         leadingIcon = Icons.Default.Email,
-                        isError = uiState.errorMessage != null,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    // Phone Field
+                    AppTextField(
+                        value = uiState.phone,
+                        onValueChange = { viewModel.onPhoneChanged(it) },
+                        label = "Phone Number",
+                        keyboardType = KeyboardType.Phone,
+                        leadingIcon = Icons.Default.Phone,
                         modifier = Modifier.fillMaxWidth()
                     )
                     
@@ -179,7 +185,6 @@ fun RegisterScreen(
                         isPassword = true,
                         isPasswordVisible = uiState.isPasswordVisible,
                         onPasswordVisibilityToggle = { viewModel.togglePasswordVisibility() },
-                        isError = uiState.errorMessage != null,
                         modifier = Modifier.fillMaxWidth()
                     )
                     
@@ -195,31 +200,8 @@ fun RegisterScreen(
                         isPassword = true,
                         isPasswordVisible = uiState.isPasswordConfirmationVisible,
                         onPasswordVisibilityToggle = { viewModel.togglePasswordConfirmationVisibility() },
-                        isError = uiState.errorMessage != null,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    
-                    // Error Message
-                    AnimatedVisibility(
-                        visible = uiState.errorMessage != null,
-                        enter = expandVertically(
-                            animationSpec = spring(
-                                dampingRatio = Spring.DampingRatioMediumBouncy,
-                                stiffness = Spring.StiffnessLow
-                            )
-                        ) + fadeIn(),
-                        exit = shrinkVertically() + androidx.compose.animation.fadeOut()
-                    ) {
-                        Column {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = uiState.errorMessage ?: "",
-                                color = colors.error,
-                                style = MaterialTheme.typography.bodySmall,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
                     
                     Spacer(modifier = Modifier.height(24.dp))
                     
@@ -285,6 +267,17 @@ fun RegisterScreen(
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+    }
+
+    // Error Modal
+    if (uiState.showErrorModal) {
+        val errorMessage = uiState.errorMessage
+        if (errorMessage != null) {
+            ErrorModal(
+                errorMessage = errorMessage,
+                onDismiss = { viewModel.clearError() }
             )
         }
     }

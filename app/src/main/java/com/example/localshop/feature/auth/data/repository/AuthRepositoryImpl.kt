@@ -14,28 +14,125 @@ import com.example.localshop.feature.auth.domain.model.User
 import com.example.localshop.feature.auth.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import okhttp3.ResponseBody
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val authApi: AuthApi,
     private val tokenProvider: TokenProvider
 ) : AuthRepository {
+
+    private val json = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+    }
+
+    private fun extractErrorMessage(exception: Exception): String {
+        if (exception is HttpException) {
+            val errorBody = exception.response()?.errorBody()
+            if (errorBody != null) {
+                try {
+                    val errorJson = errorBody.string()
+                    val jsonObject = json.parseToJsonElement(errorJson).jsonObject
+
+                    // First check for message field
+                    val message = jsonObject["message"]?.jsonPrimitive?.content
+                    if (!message.isNullOrBlank()) {
+                        // If message is generic like "Validation failed", try to get specific errors
+                        if (message == "Validation failed" || message == "Validation error") {
+                            val errors = extractErrorMessages(jsonObject)
+                            if (errors.isNotEmpty()) {
+                                return errors.first()
+                            }
+                        }
+                        return message
+                    }
+
+                    // If no message, try to extract from errors
+                    val errors = extractErrorMessages(jsonObject)
+                    if (errors.isNotEmpty()) {
+                        return errors.first()
+                    }
+                } catch (e: Exception) {
+                    // If parsing fails, fall back to default error
+                }
+            }
+        }
+        val appError = ErrorMapper.mapToAppError(exception)
+        return appError.localizedMessage ?: appError.toString()
+    }
+
+    private fun extractErrorMessages(jsonObject: JsonObject): List<String> {
+        val errorsObject = jsonObject["errors"]?.jsonObject
+        if (errorsObject != null) {
+            val errorMessages = mutableListOf<String>()
+            for ((field, errorElement) in errorsObject) {
+                when (errorElement) {
+                    is JsonArray -> {
+                        // Handle array of error messages - take first one
+                        if (errorElement.isNotEmpty()) {
+                            val errorMsg = errorElement[0].jsonPrimitive.content
+                            errorMessages.add(errorMsg)
+                        }
+                    }
+                    else -> {
+                        // Handle single error message as string
+                        val errorMsg = errorElement.jsonPrimitive.content
+                        errorMessages.add(errorMsg)
+                    }
+                }
+            }
+            return errorMessages
+        }
+        return emptyList()
+    }
+
+    private fun <T> extractErrorMessageFromResponse(response: com.example.localshop.core.network.ApiResponse<T>): String {
+        // If message is generic like "Validation failed", try to get specific errors
+        if (response.message == "Validation failed" || response.message == "Validation error") {
+            if (response.errors != null) {
+                for ((field, errorElement) in response.errors) {
+                    when (errorElement) {
+                        is kotlinx.serialization.json.JsonArray -> {
+                            // Handle array of error messages - take first one
+                            if (errorElement.isNotEmpty()) {
+                                return errorElement[0].jsonPrimitive.content
+                            }
+                        }
+                        else -> {
+                            // Handle single error message as string
+                            return errorElement.jsonPrimitive.content
+                        }
+                    }
+                }
+            }
+        }
+        return response.message ?: "Operation failed"
+    }
     
-    override fun register(name: String, email: String, password: String, passwordConfirmation: String): Flow<ResultState<AuthResponse>> = flow {
+    override fun register(name: String, email: String, phone: String, password: String, passwordConfirmation: String): Flow<ResultState<AuthResponse>> = flow {
         emit(ResultState.Loading)
         try {
-            val request = RegisterRequestDto(name, email, password, passwordConfirmation)
+            val request = RegisterRequestDto(name, email, password, passwordConfirmation, phone)
             val response = authApi.register(request)
             if (response.success && response.data != null) {
                 val authResponse = AuthMapper.mapToDomain(response.data)
                 tokenProvider.saveToken(authResponse.token)
                 emit(ResultState.Success(authResponse))
             } else {
-                emit(ResultState.Error(response.message ?: "Operation failed"))
+                val errorMessage = extractErrorMessageFromResponse(response)
+                emit(ResultState.Error(errorMessage))
             }
         } catch (e: Exception) {
-            val appError = ErrorMapper.mapToAppError(e)
-            emit(ResultState.Error(appError.localizedMessage ?: appError.toString(), appError))
+            val errorMessage = extractErrorMessage(e)
+            emit(ResultState.Error(errorMessage))
         }
     }
     
@@ -49,11 +146,12 @@ class AuthRepositoryImpl @Inject constructor(
                 tokenProvider.saveToken(authResponse.token)
                 emit(ResultState.Success(authResponse))
             } else {
-                emit(ResultState.Error(response.message ?: "Operation failed"))
+                val errorMessage = extractErrorMessageFromResponse(response)
+                emit(ResultState.Error(errorMessage))
             }
         } catch (e: Exception) {
-            val appError = ErrorMapper.mapToAppError(e)
-            emit(ResultState.Error(appError.localizedMessage ?: appError.toString(), appError))
+            val errorMessage = extractErrorMessage(e)
+            emit(ResultState.Error(errorMessage))
         }
     }
     
@@ -65,11 +163,12 @@ class AuthRepositoryImpl @Inject constructor(
             if (response.success) {
                 emit(ResultState.Success(Unit))
             } else {
-                emit(ResultState.Error(response.message ?: "Operation failed"))
+                val errorMessage = extractErrorMessageFromResponse(response)
+                emit(ResultState.Error(errorMessage))
             }
         } catch (e: Exception) {
-            val appError = ErrorMapper.mapToAppError(e)
-            emit(ResultState.Error(appError.localizedMessage ?: appError.toString(), appError))
+            val errorMessage = extractErrorMessage(e)
+            emit(ResultState.Error(errorMessage))
         }
     }
     
@@ -81,11 +180,12 @@ class AuthRepositoryImpl @Inject constructor(
             if (response.success) {
                 emit(ResultState.Success(Unit))
             } else {
-                emit(ResultState.Error(response.message ?: "Operation failed"))
+                val errorMessage = extractErrorMessageFromResponse(response)
+                emit(ResultState.Error(errorMessage))
             }
         } catch (e: Exception) {
-            val appError = ErrorMapper.mapToAppError(e)
-            emit(ResultState.Error(appError.localizedMessage ?: appError.toString(), appError))
+            val errorMessage = extractErrorMessage(e)
+            emit(ResultState.Error(errorMessage))
         }
     }
     
@@ -97,11 +197,12 @@ class AuthRepositoryImpl @Inject constructor(
                 val user = AuthMapper.mapToDomain(response.data)
                 emit(ResultState.Success(user))
             } else {
-                emit(ResultState.Error(response.message ?: "Operation failed"))
+                val errorMessage = extractErrorMessageFromResponse(response)
+                emit(ResultState.Error(errorMessage))
             }
         } catch (e: Exception) {
-            val appError = ErrorMapper.mapToAppError(e)
-            emit(ResultState.Error(appError.localizedMessage ?: appError.toString(), appError))
+            val errorMessage = extractErrorMessage(e)
+            emit(ResultState.Error(errorMessage))
         }
     }
     
@@ -112,17 +213,18 @@ class AuthRepositoryImpl @Inject constructor(
             name?.let { request["name"] = it }
             email?.let { request["email"] = it }
             phone?.let { request["phone"] = it }
-            
+
             val response = authApi.updateUser(request)
             if (response.success && response.data != null) {
                 val user = AuthMapper.mapToDomain(response.data)
                 emit(ResultState.Success(user))
             } else {
-                emit(ResultState.Error(response.message ?: "Operation failed"))
+                val errorMessage = extractErrorMessageFromResponse(response)
+                emit(ResultState.Error(errorMessage))
             }
         } catch (e: Exception) {
-            val appError = ErrorMapper.mapToAppError(e)
-            emit(ResultState.Error(appError.localizedMessage ?: appError.toString(), appError))
+            val errorMessage = extractErrorMessage(e)
+            emit(ResultState.Error(errorMessage))
         }
     }
     
@@ -138,11 +240,12 @@ class AuthRepositoryImpl @Inject constructor(
             if (response.success) {
                 emit(ResultState.Success(Unit))
             } else {
-                emit(ResultState.Error(response.message ?: "Operation failed"))
+                val errorMessage = extractErrorMessageFromResponse(response)
+                emit(ResultState.Error(errorMessage))
             }
         } catch (e: Exception) {
-            val appError = ErrorMapper.mapToAppError(e)
-            emit(ResultState.Error(appError.localizedMessage ?: appError.toString(), appError))
+            val errorMessage = extractErrorMessage(e)
+            emit(ResultState.Error(errorMessage))
         }
     }
     
@@ -154,12 +257,13 @@ class AuthRepositoryImpl @Inject constructor(
             if (response.success) {
                 emit(ResultState.Success(Unit))
             } else {
-                emit(ResultState.Error(response.message ?: "Operation failed"))
+                val errorMessage = extractErrorMessageFromResponse(response)
+                emit(ResultState.Error(errorMessage))
             }
         } catch (e: Exception) {
             tokenProvider.clearToken()
-            val appError = ErrorMapper.mapToAppError(e)
-            emit(ResultState.Error(appError.localizedMessage ?: appError.toString(), appError))
+            val errorMessage = extractErrorMessage(e)
+            emit(ResultState.Error(errorMessage))
         }
     }
 }

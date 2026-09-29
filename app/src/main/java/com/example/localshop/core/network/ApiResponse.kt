@@ -2,20 +2,21 @@ package com.example.localshop.core.network
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
 data class ApiResponse<T>(
     @SerialName("success")
     val success: Boolean,
-    
+
     @SerialName("message")
     val message: String? = null,
-    
+
     @SerialName("data")
     val data: T? = null,
-    
+
     @SerialName("errors")
-    val errors: Map<String, List<String>>? = null
+    val errors: Map<String, JsonElement>? = null
 )
 
 @Serializable

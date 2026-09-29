@@ -30,6 +30,10 @@ class RegisterViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(email = email)
     }
     
+    fun onPhoneChanged(phone: String) {
+        _uiState.value = _uiState.value.copy(phone = phone)
+    }
+    
     fun onPasswordChanged(password: String) {
         _uiState.value = _uiState.value.copy(password = password)
     }
@@ -49,28 +53,38 @@ class RegisterViewModel @Inject constructor(
     fun register() {
         val name = _uiState.value.name.trim()
         val email = _uiState.value.email.trim()
+        val phone = _uiState.value.phone.trim()
         val password = _uiState.value.password
         val passwordConfirmation = _uiState.value.passwordConfirmation
         
-        if (name.isBlank() || email.isBlank() || password.isBlank() || passwordConfirmation.isBlank()) {
-            _uiState.value = _uiState.value.copy(errorMessage = "Please fill in all fields")
+        if (name.isBlank() || email.isBlank() || phone.isBlank() || password.isBlank() || passwordConfirmation.isBlank()) {
+            _uiState.value = _uiState.value.copy(
+                errorMessage = "Please fill in all fields",
+                showErrorModal = true
+            )
             return
         }
         
         if (password != passwordConfirmation) {
-            _uiState.value = _uiState.value.copy(errorMessage = "Passwords do not match")
+            _uiState.value = _uiState.value.copy(
+                errorMessage = "Passwords do not match",
+                showErrorModal = true
+            )
             return
         }
         
         if (password.length < 6) {
-            _uiState.value = _uiState.value.copy(errorMessage = "Password must be at least 6 characters")
+            _uiState.value = _uiState.value.copy(
+                errorMessage = "Password must be at least 6 characters",
+                showErrorModal = true
+            )
             return
         }
         
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
             
-            registerUserUseCase(name, email, password, passwordConfirmation).collect { result ->
+            registerUserUseCase(name, email, phone, password, passwordConfirmation).collect { result ->
                 when (result) {
                     is ResultState.Success -> {
                         sessionManager.setCurrentUser(result.data.user)
@@ -82,7 +96,8 @@ class RegisterViewModel @Inject constructor(
                     is ResultState.Error -> {
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
-                            errorMessage = result.message
+                            errorMessage = result.message,
+                            showErrorModal = true
                         )
                     }
                     ResultState.Loading -> {
@@ -94,6 +109,6 @@ class RegisterViewModel @Inject constructor(
     }
     
     fun clearError() {
-        _uiState.value = _uiState.value.copy(errorMessage = null)
+        _uiState.value = _uiState.value.copy(errorMessage = null, showErrorModal = false)
     }
 }

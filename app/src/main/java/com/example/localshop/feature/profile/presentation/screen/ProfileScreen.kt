@@ -3,6 +3,7 @@ package com.example.localshop.feature.profile.presentation.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Login
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.localshop.core.designsystem.component.AppButton
 import com.example.localshop.core.designsystem.component.AppOutlinedButton
+import com.example.localshop.core.designsystem.component.ErrorModal
 import com.example.localshop.core.designsystem.theme.AppTheme
 import com.example.localshop.core.navigation.Screen
 import com.example.localshop.feature.profile.presentation.viewmodel.ProfileViewModel
@@ -37,12 +40,27 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
+    val isLoggingOut by viewModel.isLoggingOut.collectAsState()
+    val logoutError by viewModel.logoutError.collectAsState()
     val colors = AppTheme.colors
-    
+
     if (!isLoggedIn) {
         NotLoggedInProfileScreen(navController, colors)
     } else {
-        LoggedInProfileScreen(navController, colors)
+        LoggedInProfileScreen(
+            navController = navController,
+            colors = colors,
+            onLogout = { viewModel.logout() },
+            isLoggingOut = isLoggingOut
+        )
+    }
+
+    // Logout Error Modal
+    if (logoutError != null) {
+        ErrorModal(
+            errorMessage = logoutError!!,
+            onDismiss = { viewModel.clearLogoutError() }
+        )
     }
 }
 
@@ -114,7 +132,9 @@ private fun NotLoggedInProfileScreen(
 @Composable
 private fun LoggedInProfileScreen(
     navController: NavController,
-    colors: com.example.localshop.core.designsystem.theme.AppColors
+    colors: com.example.localshop.core.designsystem.theme.AppColors,
+    onLogout: () -> Unit,
+    isLoggingOut: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -124,16 +144,47 @@ private fun LoggedInProfileScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Icon(
+            imageVector = Icons.Default.AccountCircle,
+            contentDescription = "Profile",
+            modifier = Modifier.size(120.dp),
+            tint = colors.primary
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
         Text(
             text = "Profile Screen",
             style = MaterialTheme.typography.headlineMedium,
             color = colors.primaryText
         )
+
         Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = "TODO: Implement logged in profile functionality",
             style = MaterialTheme.typography.bodyMedium,
             color = colors.secondaryText
         )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            AppOutlinedButton(
+                text = "Edit Profile",
+                onClick = { /* TODO: Navigate to edit profile */ },
+                modifier = Modifier.weight(1f)
+            )
+
+            AppButton(
+                text = "Logout",
+                onClick = onLogout,
+                isLoading = isLoggingOut,
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }

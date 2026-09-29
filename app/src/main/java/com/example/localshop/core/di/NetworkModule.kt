@@ -2,6 +2,7 @@ package com.example.localshop.core.di
 
 import com.example.localshop.core.common.Constants
 import com.example.localshop.core.network.AuthInterceptor
+import com.example.localshop.core.network.ErrorResponseInterceptor
 import com.example.localshop.core.network.TokenProvider
 import com.example.localshop.feature.auth.data.remote.AuthApi
 import com.example.localshop.feature.category.data.remote.CategoryApi
@@ -50,12 +51,20 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideErrorResponseInterceptor(json: Json): ErrorResponseInterceptor {
+        return ErrorResponseInterceptor(json)
+    }
+
+    @Provides
+    @Singleton
     fun provideOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
+        errorResponseInterceptor: ErrorResponseInterceptor,
         authInterceptor: AuthInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(errorResponseInterceptor)
             .addInterceptor(authInterceptor)
             .connectTimeout(Constants.CONNECTION_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(Constants.READ_TIMEOUT, TimeUnit.SECONDS)

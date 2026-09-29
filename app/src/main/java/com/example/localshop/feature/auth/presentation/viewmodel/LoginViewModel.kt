@@ -39,7 +39,10 @@ class LoginViewModel @Inject constructor(
         val password = _uiState.value.password
         
         if (email.isBlank() || password.isBlank()) {
-            _uiState.value = _uiState.value.copy(errorMessage = "Please fill in all fields")
+            _uiState.value = _uiState.value.copy(
+                errorMessage = "Please fill in all fields",
+                showErrorModal = true
+            )
             return
         }
         
@@ -58,7 +61,8 @@ class LoginViewModel @Inject constructor(
                     is ResultState.Error -> {
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
-                            errorMessage = result.message
+                            errorMessage = result.message,
+                            showErrorModal = true
                         )
                     }
                     ResultState.Loading -> {
@@ -70,6 +74,6 @@ class LoginViewModel @Inject constructor(
     }
     
     fun clearError() {
-        _uiState.value = _uiState.value.copy(errorMessage = null)
+        _uiState.value = _uiState.value.copy(errorMessage = null, showErrorModal = false)
     }
 }
