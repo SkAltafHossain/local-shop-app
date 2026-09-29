@@ -18,6 +18,8 @@ val LightSuccess = Color(0xFF4CAF50)
 val LightWarning = Color(0xFFCB611A)
 val LightAssent = Color(0xFF0DD4DB)
 val LightIndicator = Color(0xFFECE9E9)
+val LightCardBackground = Color(0xFFFFFFFF)
+val LightDivider = Color(0xFFE0E0E0)
 
 // Dark Theme Colors
 val DarkPrimary = Color(0xFF0DD4DB)
@@ -36,6 +38,8 @@ val DarkWarning = Color(0xFFFF9800)
 val DarkAssent = Color(0xFF034C4F)
 
 val DarkIndicator = Color(0xFF737373)
+val DarkCardBackground = Color(0xFF1E1E1E)
+val DarkDivider = Color(0xFF333333)
 
 val White = Color(0xFFFFFFFF)
 

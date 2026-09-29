@@ -5,6 +5,7 @@ import com.example.localshop.core.network.AuthInterceptor
 import com.example.localshop.core.network.ErrorResponseInterceptor
 import com.example.localshop.core.network.TokenProvider
 import com.example.localshop.feature.auth.data.remote.AuthApi
+import com.example.localshop.feature.cart.data.remote.CartApi
 import com.example.localshop.feature.category.data.remote.CategoryApi
 import com.example.localshop.feature.home.data.remote.ShopApi
 import com.example.localshop.feature.product.data.remote.ProductApi
@@ -103,6 +104,12 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideAuthApi(retrofit: Retrofit): AuthApi {
+        return retrofit.create()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideCartApi(retrofit: Retrofit): CartApi {
         return retrofit.create()
     }
 }

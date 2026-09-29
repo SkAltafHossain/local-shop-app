@@ -30,7 +30,9 @@ data class AppColors(
     val indicator: Color,
     val white: Color,
     val black: Color,
-    val red: Color
+    val red: Color,
+    val cardBackground: Color,
+    val divider: Color
 )
 
 // Light Theme
@@ -52,7 +54,9 @@ val LightAppColors = AppColors(
     indicator = LightIndicator,
     white = White,
     black = Black,
-    red = Red
+    red = Red,
+    cardBackground = LightCardBackground,
+    divider = LightDivider
 )
 
 // Dark Theme
@@ -74,7 +78,9 @@ val DarkAppColors = AppColors(
     indicator = DarkIndicator,
     white = White,
     black = Black,
-    red = Red
+    red = Red,
+    cardBackground = DarkCardBackground,
+    divider = DarkDivider
 )
 
 // Composition Local for custom colors

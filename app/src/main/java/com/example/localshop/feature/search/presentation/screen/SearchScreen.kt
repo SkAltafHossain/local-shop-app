@@ -39,6 +39,7 @@ fun SearchScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val colors = AppTheme.colors
+    val isLoggedIn by viewModel.isLoggedIn.collectAsState(initial = false)
     
     Column(
         modifier = Modifier
@@ -115,6 +116,21 @@ fun SearchScreen(
                                 navController.navigate(
                                     Screen.ProductDetails.createRoute(product.id)
                                 )
+                            },
+                            onAddToCartClick = {
+                                if (isLoggedIn) {
+                                    viewModel.addToCart(product.id)
+                                } else {
+                                    navController.navigate(Screen.Login.route)
+                                }
+                            },
+                            onBuyNowClick = {
+                                if (isLoggedIn) {
+                                    viewModel.addToCart(product.id)
+                                    navController.navigate(Screen.Checkout.route)
+                                } else {
+                                    navController.navigate(Screen.Login.route)
+                                }
                             }
                         )
                     }
@@ -125,5 +141,11 @@ fun SearchScreen(
     
     LaunchedEffect(Unit) {
         viewModel.clearSearch()
+    }
+    
+    LaunchedEffect(uiState.addToCartMessage) {
+        if (uiState.addToCartMessage != null) {
+            viewModel.clearAddToCartMessage()
+        }
     }
 }

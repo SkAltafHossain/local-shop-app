@@ -1,5 +1,6 @@
 package com.example.localshop.core.network
 
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -19,7 +20,7 @@ class AuthInterceptor @Inject constructor(
         }
 
         // Add auth token for protected endpoints
-        val token = runBlocking { tokenProvider.getToken() }
+        val token = runBlocking { tokenProvider.getToken().first() }
         
         if (token != null) {
             val authenticatedRequest = originalRequest.newBuilder()
@@ -42,6 +43,9 @@ class AuthInterceptor @Inject constructor(
             "/products",
             "/categories"
         )
+        
+        // Cart, orders, wishlist, and user endpoints are protected (require authentication)
+        // They are NOT in the publicEndpoints list
         
         return publicEndpoints.any { path.contains(it) }
     }

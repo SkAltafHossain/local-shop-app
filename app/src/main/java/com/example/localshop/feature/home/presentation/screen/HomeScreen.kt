@@ -40,6 +40,7 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val colors = AppTheme.colors
+    val isLoggedIn by viewModel.isLoggedIn.collectAsState(initial = false)
     
     when {
         uiState.isLoading && uiState.shopSettings == null -> {
@@ -151,6 +152,21 @@ fun HomeScreen(
                                         navController.navigate(
                                             Screen.ProductDetails.createRoute(product.id)
                                         )
+                                    },
+                                    onAddToCartClick = {
+                                        if (isLoggedIn) {
+                                            viewModel.addToCart(product.id)
+                                        } else {
+                                            navController.navigate(Screen.Login.route)
+                                        }
+                                    },
+                                    onBuyNowClick = {
+                                        if (isLoggedIn) {
+                                            viewModel.addToCart(product.id)
+                                            navController.navigate(Screen.Checkout.route)
+                                        } else {
+                                            navController.navigate(Screen.Login.route)
+                                        }
                                     }
                                 )
                             }
@@ -203,6 +219,21 @@ fun HomeScreen(
                                         navController.navigate(
                                             Screen.ProductDetails.createRoute(product.id)
                                         )
+                                    },
+                                    onAddToCartClick = {
+                                        if (isLoggedIn) {
+                                            viewModel.addToCart(product.id)
+                                        } else {
+                                            navController.navigate(Screen.Login.route)
+                                        }
+                                    },
+                                    onBuyNowClick = {
+                                        if (isLoggedIn) {
+                                            viewModel.addToCart(product.id)
+                                            navController.navigate(Screen.Checkout.route)
+                                        } else {
+                                            navController.navigate(Screen.Login.route)
+                                        }
                                     }
                                 )
                             }
@@ -255,6 +286,21 @@ fun HomeScreen(
                                         navController.navigate(
                                             Screen.ProductDetails.createRoute(product.id)
                                         )
+                                    },
+                                    onAddToCartClick = {
+                                        if (isLoggedIn) {
+                                            viewModel.addToCart(product.id)
+                                        } else {
+                                            navController.navigate(Screen.Login.route)
+                                        }
+                                    },
+                                    onBuyNowClick = {
+                                        if (isLoggedIn) {
+                                            viewModel.addToCart(product.id)
+                                            navController.navigate(Screen.Checkout.route)
+                                        } else {
+                                            navController.navigate(Screen.Login.route)
+                                        }
                                     }
                                 )
                             }

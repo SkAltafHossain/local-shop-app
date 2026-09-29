@@ -1,16 +1,23 @@
 package com.example.localshop.feature.category.data.mapper
 
+import com.example.localshop.core.common.Constants
 import com.example.localshop.feature.category.data.remote.dto.CategoryDto
 import com.example.localshop.feature.category.domain.model.Category
 
 object CategoryMapper {
     fun mapToDomain(dto: CategoryDto): Category {
+        val fullImageUrl = if (dto.imageUrl != null) {
+            "${Constants.IMAGE_BASE_URL}${dto.imageUrl}"
+        } else {
+            null
+        }
+
         return Category(
             id = dto.id,
             name = dto.name,
             slug = dto.slug,
             description = dto.description,
-            imageUrl = dto.imageUrl,
+            imageUrl = fullImageUrl,
             parentId = dto.parentId,
             parentName = dto.parentName,
             productsCount = dto.productsCount,
@@ -19,7 +26,7 @@ object CategoryMapper {
             updatedAt = dto.updatedAt
         )
     }
-    
+
     fun mapToDomainList(dtos: List<CategoryDto>): List<Category> {
         return dtos.map { mapToDomain(it) }
     }

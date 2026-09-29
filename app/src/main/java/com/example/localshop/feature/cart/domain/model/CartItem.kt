@@ -14,5 +14,6 @@ data class CartItem(
 data class Cart(
     val items: List<CartItem>,
     val subtotal: Double,
-    val total: Double
+    val total: Double,
+    val cartCount: Int = 0
 )

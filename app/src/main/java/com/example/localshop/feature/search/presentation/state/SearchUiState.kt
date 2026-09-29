@@ -6,5 +6,8 @@ data class SearchUiState(
     val isLoading: Boolean = false,
     val searchQuery: String = "",
     val searchResults: List<Product> = emptyList(),
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val isAddingToCart: Boolean = false,
+    val addToCartSuccess: Boolean = false,
+    val addToCartMessage: String? = null
 )

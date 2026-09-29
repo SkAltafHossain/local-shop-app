@@ -62,6 +62,7 @@ fun ProductScreen(
     val categoryUiState by categoryViewModel.uiState.collectAsState()
     val gridState = rememberLazyGridState()
     val colors = AppTheme.colors
+    val isLoggedIn by productViewModel.isLoggedIn.collectAsState(initial = false)
 
     // Load categories for filter
     LaunchedEffect(Unit) {
@@ -187,6 +188,21 @@ fun ProductScreen(
                                 navController.navigate(
                                     Screen.ProductDetails.createRoute(product.id)
                                 )
+                            },
+                            onAddToCartClick = {
+                                if (isLoggedIn) {
+                                    productViewModel.addToCart(product.id)
+                                } else {
+                                    navController.navigate(Screen.Login.route)
+                                }
+                            },
+                            onBuyNowClick = {
+                                if (isLoggedIn) {
+                                    productViewModel.addToCart(product.id)
+                                    navController.navigate(Screen.Checkout.route)
+                                } else {
+                                    navController.navigate(Screen.Login.route)
+                                }
                             }
                         )
                     }

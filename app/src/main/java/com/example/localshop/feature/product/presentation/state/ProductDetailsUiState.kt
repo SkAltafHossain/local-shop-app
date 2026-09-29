@@ -5,5 +5,8 @@ import com.example.localshop.feature.product.domain.model.ProductDetails
 data class ProductDetailsUiState(
     val isLoading: Boolean = false,
     val productDetails: ProductDetails? = null,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val isAddingToCart: Boolean = false,
+    val addToCartSuccess: Boolean = false,
+    val addToCartMessage: String? = null
 )

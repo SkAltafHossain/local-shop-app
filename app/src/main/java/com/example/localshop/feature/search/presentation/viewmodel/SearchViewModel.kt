@@ -2,7 +2,9 @@ package com.example.localshop.feature.search.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.localshop.core.auth.SessionManager
 import com.example.localshop.core.result.ResultState
+import com.example.localshop.feature.cart.domain.usecase.AddToCartUseCase
 import com.example.localshop.feature.product.domain.usecase.SearchProductsUseCase
 import com.example.localshop.feature.search.presentation.state.SearchUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,11 +18,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val searchProductsUseCase: SearchProductsUseCase
+    private val searchProductsUseCase: SearchProductsUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
+    val isLoggedIn = sessionManager.isLoggedIn
     
     private var searchJob: Job? = null
     
@@ -70,5 +75,40 @@ class SearchViewModel @Inject constructor(
     fun clearSearch() {
         searchJob?.cancel()
         _uiState.value = SearchUiState()
+    }
+    
+    fun addToCart(productId: Int, quantity: Int = 1) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isAddingToCart = true)
+            
+            addToCartUseCase(productId, quantity).collect { result ->
+                when (result) {
+                    is ResultState.Success -> {
+                        _uiState.value = _uiState.value.copy(
+                            isAddingToCart = false,
+                            addToCartSuccess = true,
+                            addToCartMessage = "Item added to cart"
+                        )
+                    }
+                    is ResultState.Error -> {
+                        _uiState.value = _uiState.value.copy(
+                            isAddingToCart = false,
+                            addToCartSuccess = false,
+                            addToCartMessage = result.message
+                        )
+                    }
+                    ResultState.Loading -> {
+                        // Keep loading state
+                    }
+                }
+            }
+        }
+    }
+    
+    fun clearAddToCartMessage() {
+        _uiState.value = _uiState.value.copy(
+            addToCartMessage = null,
+            addToCartSuccess = false
+        )
     }
 }

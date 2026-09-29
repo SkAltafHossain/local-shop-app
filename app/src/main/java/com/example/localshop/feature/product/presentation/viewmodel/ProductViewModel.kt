@@ -2,7 +2,9 @@ package com.example.localshop.feature.product.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.localshop.core.auth.SessionManager
 import com.example.localshop.core.result.ResultState
+import com.example.localshop.feature.cart.domain.usecase.AddToCartUseCase
 import com.example.localshop.feature.product.domain.model.Product
 import com.example.localshop.feature.product.domain.model.ProductFilters
 import com.example.localshop.feature.product.domain.usecase.GetProductsUseCase
@@ -15,11 +17,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProductViewModel @Inject constructor(
-    private val getProductsUseCase: GetProductsUseCase
+    private val getProductsUseCase: GetProductsUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(ProductUiState())
     val uiState: StateFlow<ProductUiState> = _uiState.asStateFlow()
+    val isLoggedIn = sessionManager.isLoggedIn
     
     private var currentFilters: ProductFilters = ProductFilters()
     
@@ -105,6 +110,41 @@ class ProductViewModel @Inject constructor(
     fun clearError() {
         _uiState.value = _uiState.value.copy(errorMessage = null)
     }
+    
+    fun addToCart(productId: Int, quantity: Int = 1) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isAddingToCart = true)
+            
+            addToCartUseCase(productId, quantity).collect { result ->
+                when (result) {
+                    is ResultState.Success -> {
+                        _uiState.value = _uiState.value.copy(
+                            isAddingToCart = false,
+                            addToCartSuccess = true,
+                            addToCartMessage = "Item added to cart"
+                        )
+                    }
+                    is ResultState.Error -> {
+                        _uiState.value = _uiState.value.copy(
+                            isAddingToCart = false,
+                            addToCartSuccess = false,
+                            addToCartMessage = result.message
+                        )
+                    }
+                    ResultState.Loading -> {
+                        // Keep loading state
+                    }
+                }
+            }
+        }
+    }
+    
+    fun clearAddToCartMessage() {
+        _uiState.value = _uiState.value.copy(
+            addToCartMessage = null,
+            addToCartSuccess = false
+        )
+    }
 }
 
 data class ProductUiState(
@@ -115,5 +155,8 @@ data class ProductUiState(
     val currentPage: Int = 1,
     val lastPage: Int = 1,
     val total: Int = 0,
-    val perPage: Int = 12
+    val perPage: Int = 12,
+    val isAddingToCart: Boolean = false,
+    val addToCartSuccess: Boolean = false,
+    val addToCartMessage: String? = null
 )

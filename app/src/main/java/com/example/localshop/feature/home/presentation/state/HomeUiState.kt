@@ -13,5 +13,8 @@ data class HomeUiState(
     val categories: List<Category> = emptyList(),
     val latestProducts: List<Product> = emptyList(),
     val featuredProducts: List<Product> = emptyList(),
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val isAddingToCart: Boolean = false,
+    val addToCartSuccess: Boolean = false,
+    val addToCartMessage: String? = null
 )

@@ -42,6 +42,7 @@ fun CategoryDetailsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val colors = AppTheme.colors
+    val isLoggedIn by viewModel.isLoggedIn.collectAsState(initial = false)
     
     LaunchedEffect(categoryId) {
         viewModel.loadCategoryDetails(categoryId)
@@ -123,6 +124,21 @@ fun CategoryDetailsScreen(
                                 modifier = Modifier.width(160.dp),
                                 onProductClick = {
                                     navController.navigate(Screen.ProductDetails.createRoute(product.id))
+                                },
+                                onAddToCartClick = {
+                                    if (isLoggedIn) {
+                                        viewModel.addToCart(product.id)
+                                    } else {
+                                        navController.navigate(Screen.Login.route)
+                                    }
+                                },
+                                onBuyNowClick = {
+                                    if (isLoggedIn) {
+                                        viewModel.addToCart(product.id)
+                                        navController.navigate(Screen.Checkout.route)
+                                    } else {
+                                        navController.navigate(Screen.Login.route)
+                                    }
                                 }
                             )
                         }

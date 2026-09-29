@@ -2,8 +2,12 @@ package com.example.localshop.core.di
 
 import com.example.localshop.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.localshop.feature.auth.domain.repository.AuthRepository
+import com.example.localshop.feature.cart.data.repository.CartRepositoryImpl
+import com.example.localshop.feature.cart.domain.repository.CartRepository
 import com.example.localshop.feature.category.data.repository.CategoryRepositoryImpl
 import com.example.localshop.feature.category.domain.repository.CategoryRepository
+import com.example.localshop.feature.checkout.data.repository.CheckoutRepositoryImpl
+import com.example.localshop.feature.checkout.domain.repository.CheckoutRepository
 import com.example.localshop.feature.home.data.repository.HomeRepositoryImpl
 import com.example.localshop.feature.home.data.repository.ShopRepositoryImpl
 import com.example.localshop.feature.home.domain.repository.HomeRepository
@@ -49,4 +53,16 @@ abstract class RepositoryModule {
     abstract fun bindAuthRepository(
         authRepositoryImpl: AuthRepositoryImpl
     ): AuthRepository
+    
+    @Binds
+    @Singleton
+    abstract fun bindCartRepository(
+        cartRepositoryImpl: CartRepositoryImpl
+    ): CartRepository
+    
+    @Binds
+    @Singleton
+    abstract fun bindCheckoutRepository(
+        checkoutRepositoryImpl: CheckoutRepositoryImpl
+    ): CheckoutRepository
 }
