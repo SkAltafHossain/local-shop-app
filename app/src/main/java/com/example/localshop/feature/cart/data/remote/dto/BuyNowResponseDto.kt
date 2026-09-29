@@ -5,18 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BuyNowResponseDto(
-    @SerialName("success")
-    val success: Boolean,
-
-    @SerialName("message")
-    val message: String,
-
-    @SerialName("data")
-    val data: BuyNowDataDto
-)
-
-@Serializable
-data class BuyNowDataDto(
     @SerialName("product")
     val product: BuyNowProductDto,
 
@@ -60,7 +48,7 @@ data class BuyNowProductDto(
     val price: String,
 
     @SerialName("discount_price")
-    val discountPrice: String?,
+    val discountPrice: String? = null,
 
     @SerialName("stock")
     val stock: Int,
@@ -78,10 +66,10 @@ data class BuyNowProductDto(
     val createdAt: String,
 
     @SerialName("updated_at")
-    val updatedAt: String?,
+    val updatedAt: String? = null,
 
     @SerialName("deleted_at")
-    val deletedAt: String?,
+    val deletedAt: String? = null,
 
     @SerialName("category")
     val category: CategoryDto
@@ -111,5 +99,5 @@ data class CategoryDto(
     val updatedAt: String,
 
     @SerialName("deleted_at")
-    val deletedAt: String?
+    val deletedAt: String? = null
 )

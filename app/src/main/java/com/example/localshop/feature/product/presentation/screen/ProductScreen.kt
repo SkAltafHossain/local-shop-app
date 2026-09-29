@@ -198,8 +198,7 @@ fun ProductScreen(
                             },
                             onBuyNowClick = {
                                 if (isLoggedIn) {
-                                    productViewModel.addToCart(product.id)
-                                    navController.navigate(Screen.Checkout.route)
+                                    navController.navigate(Screen.CheckoutBuyNow.createRoute(product.id))
                                 } else {
                                     navController.navigate(Screen.Login.route)
                                 }

@@ -140,15 +140,26 @@ class CartRepositoryImpl @Inject constructor(
         emit(ResultState.Loading)
         try {
             val request = BuyNowRequestDto(productId, quantity)
+            android.util.Log.d("BuyNow", "Request: $request")
             val response = cartApi.buyNow(request)
+            android.util.Log.d("BuyNow", "Raw Response: success=${response.success}, message=${response.message}, data=${response.data != null}")
             if (response.success && response.data != null) {
-                val buyNowData = BuyNowMapper.toDomain(response.data)
-                emit(ResultState.Success(buyNowData))
+                try {
+                    val buyNowData = BuyNowMapper.toDomain(response.data)
+                    android.util.Log.d("BuyNow", "Mapping successful: ${buyNowData.product.name}")
+                    emit(ResultState.Success(buyNowData))
+                } catch (e: Exception) {
+                    android.util.Log.e("BuyNow", "Mapping error", e)
+                    android.util.Log.e("BuyNow", "Response data: ${response.data}")
+                    emit(ResultState.Error("Mapping error: ${e.message}"))
+                }
             } else {
                 val errorMessage = extractErrorMessageFromResponse(response)
+                android.util.Log.e("BuyNow", "API error: $errorMessage")
                 emit(ResultState.Error(errorMessage))
             }
         } catch (e: Exception) {
+            android.util.Log.e("BuyNow", "Network error", e)
             val errorMessage = e.message ?: "Failed to process Buy Now"
             emit(ResultState.Error(errorMessage))
         }

@@ -29,6 +29,8 @@ class CheckoutViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CheckoutUiState())
     val uiState: StateFlow<CheckoutUiState> = _uiState.asStateFlow()
 
+    private var currentProductId: Int = 0
+
     fun loadCart() {
         viewModelScope.launch {
             // Clear previous Buy Now data and set Cart mode
@@ -62,6 +64,8 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun loadBuyNowProduct(productId: Int) {
+        currentProductId = productId
+        android.util.Log.d("CheckoutViewModel", "loadBuyNowProduct called with productId: $productId")
         viewModelScope.launch {
             // Clear previous cart data and set Buy Now mode
             _uiState.value = CheckoutUiState(
@@ -71,11 +75,14 @@ class CheckoutViewModel @Inject constructor(
             )
 
             buyNowUseCase(productId, 1).collect { result ->
+                android.util.Log.d("CheckoutViewModel", "BuyNow result: $result")
                 when (result) {
                     is ResultState.Success -> {
                         val buyNowData = result.data
+                        android.util.Log.d("CheckoutViewModel", "BuyNowData received: ${buyNowData.product.name}")
                         // Convert BuyNowData to Cart for checkout
                         val buyNowCart = BuyNowMapper.toCart(buyNowData)
+                        android.util.Log.d("CheckoutViewModel", "Cart created with ${buyNowCart.items.size} items")
 
                         _uiState.value = _uiState.value.copy(
                             cart = buyNowCart,
@@ -84,12 +91,14 @@ class CheckoutViewModel @Inject constructor(
                         )
                     }
                     is ResultState.Error -> {
+                        android.util.Log.e("CheckoutViewModel", "BuyNow error: ${result.message}")
                         _uiState.value = _uiState.value.copy(
                             errorMessage = result.message,
                             isLoading = false
                         )
                     }
                     ResultState.Loading -> {
+                        android.util.Log.d("CheckoutViewModel", "BuyNow loading")
                         // Keep loading state
                     }
                 }
@@ -156,6 +165,5 @@ class CheckoutViewModel @Inject constructor(
 
     fun resetCheckout() {
         _uiState.value = CheckoutUiState()
-        loadCart()
     }
 }

@@ -11,13 +11,13 @@ import com.example.localshop.feature.cart.domain.model.Product
 object BuyNowMapper {
     fun toDomain(dto: BuyNowResponseDto): BuyNowData {
         return BuyNowData(
-            product = toProductDomain(dto.data.product),
-            quantity = dto.data.quantity,
-            price = dto.data.price.toDoubleOrNull() ?: 0.0,
-            subtotal = dto.data.subtotal,
-            shipping = dto.data.shipping,
-            total = dto.data.total,
-            isBuyNow = dto.data.isBuyNow
+            product = toProductDomain(dto.product),
+            quantity = dto.quantity,
+            price = dto.price.toDoubleOrNull() ?: 0.0,
+            subtotal = dto.subtotal,
+            shipping = dto.shipping,
+            total = dto.total,
+            isBuyNow = dto.isBuyNow
         )
     }
 

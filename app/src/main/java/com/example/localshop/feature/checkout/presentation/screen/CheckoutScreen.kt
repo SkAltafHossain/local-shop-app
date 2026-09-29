@@ -86,6 +86,19 @@ fun CheckoutScreen(
             uiState.isLoading && uiState.cart == null -> {
                 LoadingIndicator(message = "Loading checkout...")
             }
+            uiState.errorMessage != null && uiState.cart == null -> {
+                ErrorView(
+                    message = uiState.errorMessage ?: "Error loading checkout",
+                    onRetry = {
+                        viewModel.clearErrorMessage()
+                        if (uiState.isBuyNowMode) {
+                            viewModel.loadBuyNowProduct(productId.toIntOrNull() ?: 0)
+                        } else {
+                            viewModel.loadCart()
+                        }
+                    }
+                )
+            }
             uiState.cart?.items?.isEmpty() == true -> {
                 EmptyState(
                     message = "Your cart is empty",
