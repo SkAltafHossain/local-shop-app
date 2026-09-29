@@ -15,7 +15,10 @@ data class RegisterRequestDto(
     val password: String,
     
     @SerialName("password_confirmation")
-    val passwordConfirmation: String
+    val passwordConfirmation: String,
+    
+    @SerialName("phone")
+    val phone: String
 )
 
 @Serializable

@@ -6,7 +6,7 @@ import com.example.localshop.feature.auth.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
-    fun register(name: String, email: String, password: String, passwordConfirmation: String): Flow<ResultState<AuthResponse>>
+    fun register(name: String, email: String, phone: String, password: String, passwordConfirmation: String): Flow<ResultState<AuthResponse>>
     fun login(email: String, password: String): Flow<ResultState<AuthResponse>>
     fun forgotPassword(email: String): Flow<ResultState<Unit>>
     fun resetPassword(email: String, token: String, password: String, passwordConfirmation: String): Flow<ResultState<Unit>>
