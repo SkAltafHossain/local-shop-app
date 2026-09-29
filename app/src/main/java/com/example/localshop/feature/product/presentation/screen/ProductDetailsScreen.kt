@@ -52,9 +52,17 @@ fun ProductDetailsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val colors = AppTheme.colors
+    val isLoggedIn by viewModel.isLoggedIn.collectAsState(initial = false)
     
     LaunchedEffect(productId) {
         viewModel.loadProductDetails(productId.toIntOrNull() ?: 0)
+    }
+    
+    LaunchedEffect(uiState.addToCartMessage) {
+        if (uiState.addToCartMessage != null) {
+            // Show message (you can use a snackbar or toast here)
+            viewModel.clearAddToCartMessage()
+        }
     }
     
     when {
@@ -160,9 +168,15 @@ fun ProductDetailsScreen(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 Button(
-                                    onClick = { /* TODO: Add to cart */ },
+                                    onClick = {
+                                        if (isLoggedIn) {
+                                            viewModel.addToCart(productDetails.product.id)
+                                        } else {
+                                            navController.navigate(Screen.Login.route)
+                                        }
+                                    },
                                     modifier = Modifier.weight(1f),
-                                    enabled = inStock,
+                                    enabled = inStock && !uiState.isAddingToCart,
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = colors.secondaryButton,
                                         contentColor = colors.primaryText
@@ -170,14 +184,20 @@ fun ProductDetailsScreen(
                                     shape = RoundedCornerShape(12.dp)
                                 ) {
                                     Text(
-                                        text = if (inStock) "Add to Cart" else "Out of Stock",
+                                        text = if (uiState.isAddingToCart) "Adding..." else if (inStock) "Add to Cart" else "Out of Stock",
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold
                                     )
                                 }
                                 
                                 Button(
-                                    onClick = { /* TODO: Buy now */ },
+                                    onClick = {
+                                        if (isLoggedIn) {
+                                            navController.navigate(Screen.CheckoutBuyNow.createRoute(productDetails.product.id))
+                                        } else {
+                                            navController.navigate(Screen.Login.route)
+                                        }
+                                    },
                                     modifier = Modifier.weight(1f),
                                     enabled = inStock,
                                     colors = ButtonDefaults.buttonColors(

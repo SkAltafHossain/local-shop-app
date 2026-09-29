@@ -107,7 +107,12 @@ fun LocalShopNavigation(
         composable(Screen.Checkout.route) {
             CheckoutScreen(navController = navController)
         }
-        
+
+        composable(Screen.CheckoutBuyNow.route) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId") ?: ""
+            CheckoutScreen(navController = navController, productId = productId)
+        }
+
         composable(Screen.AddressManagement.route) {
             AddressManagementScreen(navController = navController)
         }

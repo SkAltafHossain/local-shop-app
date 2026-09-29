@@ -21,6 +21,9 @@ sealed class Screen(val route: String) {
     data object Cart : Screen("cart")
     data object Wishlist : Screen("wishlist")
     data object Checkout : Screen("checkout")
+    data object CheckoutBuyNow : Screen("checkout_buynow/{productId}") {
+        fun createRoute(productId: Int) = "checkout_buynow/$productId"
+    }
     data object AddressManagement : Screen("address_management")
     data object OrderHistory : Screen("order_history")
     data object OrderDetails : Screen("order_details/{orderId}") {
