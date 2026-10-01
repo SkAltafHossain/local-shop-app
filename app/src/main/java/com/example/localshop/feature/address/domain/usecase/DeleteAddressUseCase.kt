@@ -1,0 +1,14 @@
+package com.example.localshop.feature.address.domain.usecase
+
+import com.example.localshop.core.result.ResultState
+import com.example.localshop.feature.address.domain.repository.AddressRepository
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+
+class DeleteAddressUseCase @Inject constructor(
+    private val repository: AddressRepository
+) {
+    operator fun invoke(addressId: Int): Flow<ResultState<Unit>> {
+        return repository.deleteAddress(addressId)
+    }
+}
