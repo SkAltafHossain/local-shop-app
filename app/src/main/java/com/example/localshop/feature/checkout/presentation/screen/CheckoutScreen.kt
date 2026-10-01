@@ -20,6 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
@@ -74,6 +75,18 @@ fun CheckoutScreen(
         } else {
             // Regular checkout - load cart
             viewModel.loadCart()
+        }
+    }
+
+    // Listen for address selection result from address management
+    val selectedAddressIdFromBackStack = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.get<Int>("selectedAddressId")
+
+    LaunchedEffect(selectedAddressIdFromBackStack) {
+        selectedAddressIdFromBackStack?.let { addressId ->
+            viewModel.selectAddress(addressId)
+            navController.currentBackStackEntry?.savedStateHandle?.remove<Int>("selectedAddressId")
         }
     }
     
@@ -155,7 +168,12 @@ fun CheckoutScreen(
 
                         // Address Section
                         AddressSection(
-                            onAddAddress = { navController.navigate(Screen.AddressManagement.route) },
+                            addresses = uiState.addresses,
+                            selectedAddressId = uiState.selectedAddressId,
+                            isLoadingAddresses = uiState.isLoadingAddresses,
+                            onChangeAddress = {
+                                navController.navigate(Screen.AddressManagement.route + "?fromCheckout=true")
+                            },
                             colors = colors
                         )
                         
@@ -198,7 +216,7 @@ fun CheckoutScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            enabled = !uiState.isProcessingCheckout,
+                            enabled = !uiState.isProcessingCheckout && uiState.selectedAddressId != null,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = colors.primaryButton,
                                 contentColor = colors.primaryText
@@ -251,7 +269,10 @@ fun CheckoutScreen(
 
 @Composable
 fun AddressSection(
-    onAddAddress: () -> Unit,
+    addresses: List<com.example.localshop.feature.address.domain.model.Address>,
+    selectedAddressId: Int?,
+    isLoadingAddresses: Boolean,
+    onChangeAddress: () -> Unit,
     colors: com.example.localshop.core.designsystem.theme.AppColors
 ) {
     Card(
@@ -269,49 +290,189 @@ fun AddressSection(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.LocationOn,
-                    contentDescription = null,
-                    tint = colors.primary,
-                    modifier = Modifier.size(20.dp)
-                )
-                Text(
-                    text = "Delivery Address",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = colors.primaryText,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            
-            Spacer(modifier = Modifier.height(12.dp))
-            
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        width = 1.dp,
-                        color = colors.divider,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .clickable { onAddAddress() }
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = null,
+                        tint = colors.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Text(
+                        text = "Delivery Address",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = colors.primaryText,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Button(
+                    onClick = onChangeAddress,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colors.secondaryButton,
+                        contentColor = colors.primaryText
+                    ),
+                    modifier = Modifier.height(36.dp)
                 ) {
                     Text(
-                        text = "+ Add Delivery Address",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = colors.primary,
-                        fontWeight = FontWeight.Medium
+                        text = "Change",
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            when {
+                isLoadingAddresses -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = colors.primary
+                        )
+                    }
+                }
+                addresses.isEmpty() -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(
+                                width = 1.dp,
+                                color = colors.divider,
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .clickable { onChangeAddress() }
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null,
+                                tint = colors.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Text(
+                                text = "Add Delivery Address",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = colors.primary,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
+                }
+                else -> {
+                    val selectedAddress = addresses.find { it.id == selectedAddressId }
+                    if (selectedAddress != null) {
+                        SingleAddressCard(
+                            address = selectedAddress,
+                            colors = colors
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(
+                                    width = 1.dp,
+                                    color = colors.divider,
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .clickable { onChangeAddress() }
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Please select an address",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = colors.secondaryText
+                            )
+                        }
+                    }
+                }
+            }
         }
+    }
+}
+
+@Composable
+fun SingleAddressCard(
+    address: com.example.localshop.feature.address.domain.model.Address,
+    colors: com.example.localshop.core.designsystem.theme.AppColors
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = colors.divider,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(12.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Text(
+                text = address.type.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() },
+                style = MaterialTheme.typography.bodyMedium,
+                color = colors.primaryText,
+                fontWeight = FontWeight.Bold
+            )
+            if (address.isDefault) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "Default",
+                    tint = Color.Green,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = address.fullName,
+            style = MaterialTheme.typography.bodyMedium,
+            color = colors.primaryText,
+            fontWeight = FontWeight.Medium
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = address.phone,
+            style = MaterialTheme.typography.bodySmall,
+            color = colors.secondaryText
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = "${address.addressLine1}${if (address.addressLine2 != null) ", ${address.addressLine2}" else ""}",
+            style = MaterialTheme.typography.bodySmall,
+            color = colors.primaryText
+        )
+
+        Spacer(modifier = Modifier.height(2.dp))
+
+        Text(
+            text = "${address.city}, ${address.state} - ${address.postalCode}",
+            style = MaterialTheme.typography.bodySmall,
+            color = colors.secondaryText
+        )
     }
 }
 

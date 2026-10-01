@@ -113,8 +113,17 @@ fun LocalShopNavigation(
             CheckoutScreen(navController = navController, productId = productId)
         }
 
-        composable(Screen.AddressManagement.route) {
-            AddressManagementScreen(navController = navController)
+        composable(
+            route = Screen.AddressManagement.route + "?fromCheckout={fromCheckout}",
+            arguments = listOf(
+                androidx.navigation.navArgument("fromCheckout") {
+                    type = androidx.navigation.NavType.BoolType
+                    defaultValue = false
+                }
+            )
+        ) { backStackEntry ->
+            val fromCheckout = backStackEntry.arguments?.getBoolean("fromCheckout") ?: false
+            AddressManagementScreen(navController = navController, fromCheckout = fromCheckout)
         }
         
         composable(Screen.OrderHistory.route) {

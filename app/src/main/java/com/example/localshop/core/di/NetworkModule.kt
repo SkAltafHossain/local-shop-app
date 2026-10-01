@@ -4,6 +4,7 @@ import com.example.localshop.core.common.Constants
 import com.example.localshop.core.network.AuthInterceptor
 import com.example.localshop.core.network.ErrorResponseInterceptor
 import com.example.localshop.core.network.TokenProvider
+import com.example.localshop.feature.address.data.remote.AddressApi
 import com.example.localshop.feature.auth.data.remote.AuthApi
 import com.example.localshop.feature.cart.data.remote.CartApi
 import com.example.localshop.feature.category.data.remote.CategoryApi
@@ -110,6 +111,12 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideCartApi(retrofit: Retrofit): CartApi {
+        return retrofit.create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAddressApi(retrofit: Retrofit): AddressApi {
         return retrofit.create()
     }
 }

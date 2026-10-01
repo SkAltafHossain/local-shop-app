@@ -1,8 +1,8 @@
 package com.example.localshop.core.common
 
 object Constants {
-    const val BASE_URL = "http://192.168.31.228:8001/api/"
-    const val IMAGE_BASE_URL = "http://192.168.31.228:8001/storage/"
+    const val BASE_URL = "https://living-chariot-recycling.ngrok-free.dev/api/"
+    const val IMAGE_BASE_URL = "https://living-chariot-recycling.ngrok-free.dev/storage/"
     const val PREF_NAME = "localshop_prefs"
     const val KEY_AUTH_TOKEN = "auth_token"
     const val KEY_USER_ID = "user_id"

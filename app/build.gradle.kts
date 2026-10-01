@@ -92,6 +92,9 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
 
+    // Google Play Services Location
+    implementation(libs.play.services.location)
+
     // Material Icons
     implementation(libs.androidx.material.icons.extended)
 

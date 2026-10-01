@@ -8,6 +8,7 @@ import com.example.localshop.feature.cart.domain.model.CartItem
 import com.example.localshop.feature.cart.data.mapper.BuyNowMapper
 import com.example.localshop.feature.cart.domain.usecase.BuyNowUseCase
 import com.example.localshop.feature.cart.domain.usecase.GetCartUseCase
+import com.example.localshop.feature.address.domain.usecase.GetAddressesUseCase
 import com.example.localshop.feature.checkout.domain.model.CheckoutItem
 import com.example.localshop.feature.checkout.domain.model.CheckoutRequest
 import com.example.localshop.feature.checkout.domain.usecase.ProcessCheckoutUseCase
@@ -23,7 +24,8 @@ import javax.inject.Inject
 class CheckoutViewModel @Inject constructor(
     private val getCartUseCase: GetCartUseCase,
     private val processCheckoutUseCase: ProcessCheckoutUseCase,
-    private val buyNowUseCase: BuyNowUseCase
+    private val buyNowUseCase: BuyNowUseCase,
+    private val getAddressesUseCase: GetAddressesUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CheckoutUiState())
@@ -48,6 +50,8 @@ class CheckoutViewModel @Inject constructor(
                             isLoading = false,
                             errorMessage = null
                         )
+                        // Load addresses after cart is loaded
+                        loadAddresses()
                     }
                     is ResultState.Error -> {
                         _uiState.value = _uiState.value.copy(
@@ -89,6 +93,8 @@ class CheckoutViewModel @Inject constructor(
                             isLoading = false,
                             errorMessage = null
                         )
+                        // Load addresses after product is loaded
+                        loadAddresses()
                     }
                     is ResultState.Error -> {
                         android.util.Log.e("CheckoutViewModel", "BuyNow error: ${result.message}")
@@ -110,6 +116,39 @@ class CheckoutViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(selectedPaymentMethod = method)
     }
 
+    fun loadAddresses() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoadingAddresses = true)
+
+            getAddressesUseCase().collect { result ->
+                when (result) {
+                    is ResultState.Success -> {
+                        val addresses = result.data
+                        // Automatically select default address if available
+                        val defaultAddress = addresses.find { it.isDefault }
+                        _uiState.value = _uiState.value.copy(
+                            addresses = addresses,
+                            selectedAddressId = defaultAddress?.id,
+                            isLoadingAddresses = false
+                        )
+                    }
+                    is ResultState.Error -> {
+                        _uiState.value = _uiState.value.copy(
+                            isLoadingAddresses = false
+                        )
+                    }
+                    ResultState.Loading -> {
+                        // Keep loading state
+                    }
+                }
+            }
+        }
+    }
+
+    fun selectAddress(addressId: Int) {
+        _uiState.value = _uiState.value.copy(selectedAddressId = addressId)
+    }
+
     fun processCheckout() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isProcessingCheckout = true)
@@ -123,6 +162,14 @@ class CheckoutViewModel @Inject constructor(
                 return@launch
             }
 
+            if (_uiState.value.selectedAddressId == null) {
+                _uiState.value = _uiState.value.copy(
+                    errorMessage = "Please select a delivery address",
+                    isProcessingCheckout = false
+                )
+                return@launch
+            }
+
             val items = cart.items.map { cartItem ->
                 CheckoutItem(
                     productId = cartItem.productId,
@@ -131,7 +178,7 @@ class CheckoutViewModel @Inject constructor(
             }
 
             val request = CheckoutRequest(
-                addressId = null, // TODO: Get from address selection
+                addressId = _uiState.value.selectedAddressId,
                 paymentMethod = _uiState.value.selectedPaymentMethod,
                 items = items
             )
