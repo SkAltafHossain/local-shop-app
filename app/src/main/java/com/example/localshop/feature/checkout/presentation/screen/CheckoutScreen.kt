@@ -230,15 +230,14 @@ fun CheckoutScreen(
                                 )
                             } else {
                                 Text(
-                                    text = if (uiState.isBuyNowMode) "BUY NOW" else "PLACE ORDER",
+                                    text = "CONFIRM ORDER",
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
                         }
 
-                        if (uiState.isBuyNowMode) {
-                            Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                             Button(
                                 onClick = { navController.popBackStack() },
                                 modifier = Modifier
@@ -257,7 +256,6 @@ fun CheckoutScreen(
                                     fontWeight = FontWeight.Bold
                                 )
                             }
-                        }
 
                         Spacer(modifier = Modifier.height(16.dp))
                     }
