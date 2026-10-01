@@ -431,26 +431,24 @@ fun AddressCard(
                     }
                 }
 
-                if (!fromCheckout) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        IconButton(onClick = onEdit, modifier = Modifier.size(36.dp)) {
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = "Edit",
-                                tint = colors.primary,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                        IconButton(onClick = onDelete, modifier = Modifier.size(36.dp)) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete",
-                                tint = Color.Red,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    IconButton(onClick = onEdit, modifier = Modifier.size(36.dp)) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit",
+                            tint = colors.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    IconButton(onClick = onDelete, modifier = Modifier.size(36.dp)) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete",
+                            tint = Color.Red,
+                            modifier = Modifier.size(20.dp)
+                        )
                     }
                 }
             }
@@ -488,29 +486,27 @@ fun AddressCard(
                 color = colors.primaryText
             )
 
-            if (!fromCheckout) {
-                Spacer(modifier = Modifier.height(12.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(
+                    onClick = onSetDefault,
+                    modifier = Modifier.size(24.dp)
                 ) {
-                    IconButton(
-                        onClick = onSetDefault,
-                        modifier = Modifier.size(24.dp)
-                    ) {
-                        Icon(
-                            imageVector = if (address.isDefault) Icons.Default.RadioButtonChecked else Icons.Default.RadioButtonUnchecked,
-                            contentDescription = if (address.isDefault) "Default Address" else "Set as Default",
-                            tint = if (address.isDefault) colors.primary else colors.secondaryText
-                        )
-                    }
-                    Text(
-                        text = if (address.isDefault) "Default Address" else "Set as Default",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = if (address.isDefault) colors.primary else colors.secondaryText
+                    Icon(
+                        imageVector = if (address.isDefault) Icons.Default.RadioButtonChecked else Icons.Default.RadioButtonUnchecked,
+                        contentDescription = if (address.isDefault) "Default Address" else "Set as Default",
+                        tint = if (address.isDefault) colors.primary else colors.secondaryText
                     )
                 }
+                Text(
+                    text = if (address.isDefault) "Default Address" else "Set as Default",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (address.isDefault) colors.primary else colors.secondaryText
+                )
             }
         }
     }
