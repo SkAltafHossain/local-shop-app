@@ -205,7 +205,7 @@ fun ProductCard(
                 // Buttons
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    horizontalArrangement = Arrangement.spacedBy(3.dp)
                 ) {
                     // Add to Cart button
                     androidx.compose.material3.Button(
@@ -216,15 +216,15 @@ fun ProductCard(
                             contentColor = colors.primaryText
                         ),
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                            horizontal = 8.dp,
-                            vertical = 6.dp
+                            horizontal = 3.dp,
+                            vertical = 8.dp
                         ),
                         shape = RoundedCornerShape(6.dp)
                     ) {
                         Text(
                             "ADD TO CART",
                             fontSize = 10.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.Bold
                         )
                     }
 
