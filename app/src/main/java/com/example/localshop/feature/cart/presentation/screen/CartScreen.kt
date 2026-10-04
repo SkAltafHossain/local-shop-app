@@ -32,9 +32,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,6 +67,21 @@ fun CartScreen(
     
     LaunchedEffect(Unit) {
         viewModel.loadCart()
+    }
+    
+    // Refresh data when navigating back to this screen
+    DisposableEffect(Unit) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.loadCart()
+            }
+        }
+        
+        navController.currentBackStackEntry?.lifecycle?.addObserver(observer)
+        
+        onDispose {
+            navController.currentBackStackEntry?.lifecycle?.removeObserver(observer)
+        }
     }
     
     Box(

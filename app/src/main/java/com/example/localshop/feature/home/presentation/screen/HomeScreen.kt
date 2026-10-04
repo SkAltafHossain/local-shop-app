@@ -17,8 +17,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +44,21 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState()
     val colors = AppTheme.colors
     val isLoggedIn by viewModel.isLoggedIn.collectAsState(initial = false)
+    
+    // Refresh data when navigating back to this screen
+    DisposableEffect(Unit) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.refresh()
+            }
+        }
+        
+        navController.currentBackStackEntry?.lifecycle?.addObserver(observer)
+        
+        onDispose {
+            navController.currentBackStackEntry?.lifecycle?.removeObserver(observer)
+        }
+    }
     
     when {
         uiState.isLoading && uiState.shopSettings == null -> {
