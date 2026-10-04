@@ -258,7 +258,7 @@ fun ProductDetailsScreen(
                                     rows = GridCells.Fixed(1),
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(200.dp),
+                                        .height(300.dp),
                                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                                 ) {
                                     items(productDetails.relatedProducts) { product ->
@@ -271,7 +271,7 @@ fun ProductDetailsScreen(
                                             rating = product.rating,
                                             reviewCount = product.reviewsCount,
                                             inStock = (product.stock ?: 0) > 0,
-                                            modifier = Modifier.width(160.dp),
+                                            modifier = Modifier.width(200.dp),
                                             onProductClick = {
                                                 navController.navigate(Screen.ProductDetails.createRoute(product.id))
                                             },

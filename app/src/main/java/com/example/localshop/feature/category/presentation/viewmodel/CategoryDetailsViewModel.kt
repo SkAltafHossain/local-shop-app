@@ -49,6 +49,7 @@ class CategoryDetailsViewModel @Inject constructor(
 
     fun loadCategoryDetails(categoryId: String) {
         viewModelScope.launch {
+            loadCart()
             _uiState.value = _uiState.value.copy(isLoading = true)
 
             getCategoryWithProductsUseCase(categoryId.toIntOrNull() ?: 0).collect { result ->

@@ -120,6 +120,7 @@ class HomeViewModel @Inject constructor(
     
     fun refresh() {
         loadHomeData()
+        loadCart()
     }
     
     fun addToCart(productId: Int, quantity: Int = 1) {

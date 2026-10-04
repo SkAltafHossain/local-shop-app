@@ -70,6 +70,7 @@ class SearchViewModel @Inject constructor(
         }
         
         viewModelScope.launch {
+            loadCart()
             _uiState.value = _uiState.value.copy(isLoading = true)
             
             searchProductsUseCase(query, perPage = 20).collect { result ->

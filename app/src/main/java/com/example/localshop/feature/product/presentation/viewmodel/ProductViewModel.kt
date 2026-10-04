@@ -52,11 +52,15 @@ class ProductViewModel @Inject constructor(
     }
     
     fun loadProducts() {
+        loadCart()
         loadProducts(ProductFilters())
     }
     
     fun loadProducts(filters: ProductFilters, reset: Boolean = true) {
         viewModelScope.launch {
+            if (reset) {
+                loadCart()
+            }
             currentFilters = if (reset) filters else currentFilters.copy(page = filters.page)
             
             if (reset) {
@@ -107,10 +111,12 @@ class ProductViewModel @Inject constructor(
     }
     
     fun loadLatestProducts() {
+        loadCart()
         loadProducts(ProductFilters(isNew = true))
     }
     
     fun loadFeaturedProducts() {
+        loadCart()
         loadProducts(ProductFilters(isFeatured = true))
     }
     
