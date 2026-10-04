@@ -149,12 +149,23 @@ class CheckoutViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(selectedAddressId = addressId)
     }
 
+    fun showConfirmationModal() {
+        _uiState.value = _uiState.value.copy(showConfirmationModal = true)
+    }
+
+    fun hideConfirmationModal() {
+        _uiState.value = _uiState.value.copy(showConfirmationModal = false)
+    }
+
     fun processCheckout() {
+        android.util.Log.d("CheckoutViewModel", "processCheckout called")
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isProcessingCheckout = true)
 
             val cart = _uiState.value.cart
+            android.util.Log.d("CheckoutViewModel", "Cart: ${cart?.items?.size} items")
             if (cart == null || cart.items.isEmpty()) {
+                android.util.Log.e("CheckoutViewModel", "Cart is empty")
                 _uiState.value = _uiState.value.copy(
                     errorMessage = "Cart is empty",
                     isProcessingCheckout = false
@@ -163,6 +174,7 @@ class CheckoutViewModel @Inject constructor(
             }
 
             if (_uiState.value.selectedAddressId == null) {
+                android.util.Log.e("CheckoutViewModel", "No address selected")
                 _uiState.value = _uiState.value.copy(
                     errorMessage = "Please select a delivery address",
                     isProcessingCheckout = false
@@ -180,25 +192,34 @@ class CheckoutViewModel @Inject constructor(
             val request = CheckoutRequest(
                 addressId = _uiState.value.selectedAddressId,
                 paymentMethod = _uiState.value.selectedPaymentMethod,
+                isBuyNow = _uiState.value.isBuyNowMode,
                 items = items
             )
 
+            android.util.Log.d("CheckoutViewModel", "Request: addressId=${request.addressId}, paymentMethod=${request.paymentMethod}, isBuyNow=${request.isBuyNow}, items=${request.items.size}")
+
             processCheckoutUseCase(request).collect { result ->
+                android.util.Log.d("CheckoutViewModel", "Checkout result: $result")
                 when (result) {
                     is ResultState.Success -> {
+                        android.util.Log.d("CheckoutViewModel", "Checkout successful, orderId=${result.data.orderId}")
                         _uiState.value = _uiState.value.copy(
                             isProcessingCheckout = false,
                             checkoutResponse = result.data,
-                            errorMessage = null
+                            errorMessage = null,
+                            showConfirmationModal = false
                         )
                     }
                     is ResultState.Error -> {
+                        android.util.Log.e("CheckoutViewModel", "Checkout error: ${result.message}")
                         _uiState.value = _uiState.value.copy(
                             errorMessage = result.message,
-                            isProcessingCheckout = false
+                            isProcessingCheckout = false,
+                            showConfirmationModal = false
                         )
                     }
                     ResultState.Loading -> {
+                        android.util.Log.d("CheckoutViewModel", "Checkout loading")
                         // Keep loading state
                     }
                 }

@@ -1,5 +1,7 @@
 package com.example.localshop.feature.checkout.data.remote.dto
 
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -7,10 +9,15 @@ import kotlinx.serialization.Serializable
 data class CheckoutRequestDto(
     @SerialName("address_id")
     val addressId: Int? = null,
-    
+
     @SerialName("payment_method")
     val paymentMethod: String,
-    
+
+    @SerialName("is_buy_now")
+    @EncodeDefault
+    @OptIn(ExperimentalSerializationApi::class)
+    val isBuyNow: Boolean = false,
+
     @SerialName("items")
     val items: List<CheckoutItemDto>
 )

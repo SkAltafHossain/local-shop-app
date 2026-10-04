@@ -48,6 +48,7 @@ class CheckoutRepositoryImpl @Inject constructor(
         emit(ResultState.Loading)
         try {
             val requestDto = CheckoutMapper.toDto(request)
+            android.util.Log.d("Checkout", "Request DTO: isBuyNow=${requestDto.isBuyNow}, addressId=${requestDto.addressId}, paymentMethod=${requestDto.paymentMethod}, items=${requestDto.items.size}")
             val response = cartApi.checkout(requestDto)
             if (response.success && response.data != null) {
                 val checkoutResponse = CheckoutMapper.toDomain(response.data)

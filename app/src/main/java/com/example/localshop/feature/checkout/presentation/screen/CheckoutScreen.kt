@@ -1,5 +1,6 @@
 package com.example.localshop.feature.checkout.presentation.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -50,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.localshop.core.designsystem.component.ConfirmationModal
 import com.example.localshop.core.designsystem.component.EmptyState
 import com.example.localshop.core.designsystem.component.ErrorView
 import com.example.localshop.core.designsystem.component.LoadingIndicator
@@ -120,25 +122,24 @@ fun CheckoutScreen(
                 )
             }
             uiState.checkoutResponse != null -> {
-                uiState.checkoutResponse?.let { checkoutResponse ->
-                    OrderSuccessScreen(
-                        orderNumber = checkoutResponse.orderNumber,
-                        totalAmount = checkoutResponse.totalAmount,
-                        onContinueShopping = {
-                            viewModel.resetCheckout()
-                            navController.navigate(Screen.Home.route) {
-                                popUpTo(Screen.Home.route) { inclusive = true }
-                            }
-                        },
-                        onViewOrders = {
-                            viewModel.resetCheckout()
-                            navController.navigate(Screen.OrderHistory.route) {
-                                popUpTo(Screen.Home.route)
-                            }
-                        },
-                        colors = colors
-                    )
-                }
+                val checkoutResponse = uiState.checkoutResponse!!
+                OrderSuccessScreen(
+                    orderNumber = checkoutResponse.orderId,
+                    totalAmount = checkoutResponse.totalAmount,
+                    onContinueShopping = {
+                        viewModel.resetCheckout()
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Home.route) { inclusive = true }
+                        }
+                    },
+                    onViewOrders = {
+                        viewModel.resetCheckout()
+                        navController.navigate(Screen.OrderHistory.route) {
+                            popUpTo(Screen.Home.route)
+                        }
+                    },
+                    colors = colors
+                )
             }
             else -> {
                 val cart = uiState.cart
@@ -212,7 +213,10 @@ fun CheckoutScreen(
                         
                         // Place Order Button
                         Button(
-                            onClick = { viewModel.processCheckout() },
+                            onClick = {
+                                android.util.Log.d("CheckoutScreen", "Confirm Order button clicked")
+                                viewModel.showConfirmationModal()
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
@@ -260,6 +264,32 @@ fun CheckoutScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
+            }
+        }
+
+        // Confirmation Modal
+        if (uiState.showConfirmationModal) {
+            val cart = uiState.cart
+            val selectedAddress = uiState.addresses.find { it.id == uiState.selectedAddressId }
+            val addressText = selectedAddress?.let {
+                "${it.fullName}\n${it.addressLine1}${if (it.addressLine2 != null) ", ${it.addressLine2}" else ""}\n${it.city}, ${it.state} - ${it.postalCode}"
+            } ?: "No address selected"
+
+            if (cart != null) {
+                ConfirmationModal(
+                    totalAmount = cart.total,
+                    itemCount = cart.items.size,
+                    address = addressText,
+                    paymentMethod = uiState.selectedPaymentMethod,
+                    onConfirm = {
+                        android.util.Log.d("CheckoutScreen", "Confirmation modal confirm clicked")
+                        viewModel.processCheckout()
+                    },
+                    onDismiss = {
+                        android.util.Log.d("CheckoutScreen", "Confirmation modal dismissed")
+                        viewModel.hideConfirmationModal()
+                    }
+                )
             }
         }
     }
@@ -609,25 +639,14 @@ fun PaymentMethodSection(
                 onSelect = onMethodSelect,
                 colors = colors
             )
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             PaymentOption(
-                title = "UPI",
-                description = "Pay using UPI apps",
-                value = "upi",
-                selected = selectedMethod == "upi",
-                onSelect = onMethodSelect,
-                colors = colors
-            )
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            PaymentOption(
-                title = "Credit/Debit Card",
-                description = "Pay using your card",
-                value = "card",
-                selected = selectedMethod == "card",
+                title = "Online Payment",
+                description = "Pay using online payment methods",
+                value = "online",
+                selected = selectedMethod == "online",
                 onSelect = onMethodSelect,
                 colors = colors
             )

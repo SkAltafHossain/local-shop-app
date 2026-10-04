@@ -14,5 +14,7 @@ data class CheckoutUiState(
     val isBuyNowMode: Boolean = false,
     val addresses: List<Address> = emptyList(),
     val selectedAddressId: Int? = null,
-    val isLoadingAddresses: Boolean = false
+    val isLoadingAddresses: Boolean = false,
+    val showConfirmationModal: Boolean = false,
+    val shouldNavigateToOrders: Boolean = false
 )

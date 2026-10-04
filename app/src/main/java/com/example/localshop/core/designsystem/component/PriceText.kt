@@ -24,7 +24,7 @@ fun PriceText(
     fontSize: Int = 16
 ) {
     val colors = AppTheme.colors
-    val currencyFormat = NumberFormat.getCurrencyInstance(Locale.US)
+    val currencyFormat = NumberFormat.getCurrencyInstance(java.util.Locale.Builder().setLanguage("en").setRegion("IN").build())
     currencyFormat.maximumFractionDigits = 0
     
     if (discountPrice != null && discountPrice < price) {
