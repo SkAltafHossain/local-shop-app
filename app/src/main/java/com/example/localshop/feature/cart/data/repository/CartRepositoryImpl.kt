@@ -91,14 +91,19 @@ class CartRepositoryImpl @Inject constructor(
         emit(ResultState.Loading)
         try {
             val request = CartUpdateRequestDto(quantity)
+            android.util.Log.d("CartUpdate", "Request: cartItemId=$cartItemId, quantity=$quantity")
             val response = cartApi.updateCartItem(cartItemId, request)
+            android.util.Log.d("CartUpdate", "Raw Response: success=${response.success}, message=${response.message}")
             if (response.success) {
+                android.util.Log.d("CartUpdate", "Update successful")
                 emit(ResultState.Success(Unit))
             } else {
                 val errorMessage = extractErrorMessageFromResponse(response)
+                android.util.Log.e("CartUpdate", "API error: $errorMessage")
                 emit(ResultState.Error(errorMessage))
             }
         } catch (e: Exception) {
+            android.util.Log.e("CartUpdate", "Network error", e)
             val errorMessage = e.message ?: "Failed to update cart item"
             emit(ResultState.Error(errorMessage))
         }

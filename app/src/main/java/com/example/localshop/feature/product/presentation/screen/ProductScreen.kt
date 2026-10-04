@@ -180,6 +180,7 @@ fun ProductScreen(
                             price = product.price,
                             discountPrice = product.discountPrice,
                             imageUrl = product.imageUrl,
+                            isInCart = uiState.cartProductIds.contains(product.id),
                             rating = product.rating,
                             reviewCount = product.reviewsCount,
                             inStock = (product.stock ?: 0) > 0,
@@ -191,7 +192,11 @@ fun ProductScreen(
                             },
                             onAddToCartClick = {
                                 if (isLoggedIn) {
-                                    productViewModel.addToCart(product.id)
+                                    if (uiState.cartProductIds.contains(product.id)) {
+                                        navController.navigate(Screen.Cart.route)
+                                    } else {
+                                        productViewModel.addToCart(product.id)
+                                    }
                                 } else {
                                     navController.navigate(Screen.Login.route)
                                 }

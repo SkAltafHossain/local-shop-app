@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.localshop.core.auth.SessionManager
 import com.example.localshop.core.result.ResultState
 import com.example.localshop.feature.cart.domain.usecase.AddToCartUseCase
+import com.example.localshop.feature.cart.domain.usecase.GetCartUseCase
 import com.example.localshop.feature.product.domain.model.Product
 import com.example.localshop.feature.product.domain.model.ProductFilters
 import com.example.localshop.feature.product.domain.usecase.GetProductsUseCase
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class ProductViewModel @Inject constructor(
     private val getProductsUseCase: GetProductsUseCase,
     private val addToCartUseCase: AddToCartUseCase,
+    private val getCartUseCase: GetCartUseCase,
     private val sessionManager: SessionManager
 ) : ViewModel() {
     
@@ -30,6 +32,23 @@ class ProductViewModel @Inject constructor(
     
     init {
         // Don't load by default - let the screen specify what to load
+        loadCart()
+    }
+
+    private fun loadCart() {
+        viewModelScope.launch {
+            getCartUseCase().collect { result ->
+                when (result) {
+                    is ResultState.Success -> {
+                        val cartProductIds = result.data.items.map { it.productId }.toSet()
+                        _uiState.value = _uiState.value.copy(cartProductIds = cartProductIds)
+                    }
+                    else -> {
+                        // Ignore errors for cart
+                    }
+                }
+            }
+        }
     }
     
     fun loadProducts() {
@@ -114,14 +133,15 @@ class ProductViewModel @Inject constructor(
     fun addToCart(productId: Int, quantity: Int = 1) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isAddingToCart = true)
-            
+
             addToCartUseCase(productId, quantity).collect { result ->
                 when (result) {
                     is ResultState.Success -> {
                         _uiState.value = _uiState.value.copy(
                             isAddingToCart = false,
                             addToCartSuccess = true,
-                            addToCartMessage = "Item added to cart"
+                            addToCartMessage = "Item added to cart",
+                            cartProductIds = _uiState.value.cartProductIds + productId
                         )
                     }
                     is ResultState.Error -> {
@@ -158,5 +178,6 @@ data class ProductUiState(
     val perPage: Int = 12,
     val isAddingToCart: Boolean = false,
     val addToCartSuccess: Boolean = false,
-    val addToCartMessage: String? = null
+    val addToCartMessage: String? = null,
+    val cartProductIds: Set<Int> = emptySet()
 )

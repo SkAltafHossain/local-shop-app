@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.localshop.core.auth.SessionManager
 import com.example.localshop.core.result.ResultState
 import com.example.localshop.feature.cart.domain.usecase.AddToCartUseCase
+import com.example.localshop.feature.cart.domain.usecase.GetCartUseCase
 import com.example.localshop.feature.home.domain.usecase.GetHomeDataUseCase
 import com.example.localshop.feature.home.domain.usecase.GetShopInfoUseCase
 import com.example.localshop.feature.home.domain.usecase.GetShopSettingsUseCase
@@ -22,6 +23,7 @@ class HomeViewModel @Inject constructor(
     private val getShopInfoUseCase: GetShopInfoUseCase,
     private val getHomeDataUseCase: GetHomeDataUseCase,
     private val addToCartUseCase: AddToCartUseCase,
+    private val getCartUseCase: GetCartUseCase,
     private val sessionManager: SessionManager
 ) : ViewModel() {
     
@@ -31,8 +33,25 @@ class HomeViewModel @Inject constructor(
     
     init {
         loadHomeData()
+        loadCart()
     }
-    
+
+    private fun loadCart() {
+        viewModelScope.launch {
+            getCartUseCase().collect { result ->
+                when (result) {
+                    is ResultState.Success -> {
+                        val cartProductIds = result.data.items.map { it.productId }.toSet()
+                        _uiState.value = _uiState.value.copy(cartProductIds = cartProductIds)
+                    }
+                    else -> {
+                        // Ignore errors for cart
+                    }
+                }
+            }
+        }
+    }
+
     private fun loadHomeData() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
@@ -106,14 +125,15 @@ class HomeViewModel @Inject constructor(
     fun addToCart(productId: Int, quantity: Int = 1) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isAddingToCart = true)
-            
+
             addToCartUseCase(productId, quantity).collect { result ->
                 when (result) {
                     is ResultState.Success -> {
                         _uiState.value = _uiState.value.copy(
                             isAddingToCart = false,
                             addToCartSuccess = true,
-                            addToCartMessage = "Item added to cart"
+                            addToCartMessage = "Item added to cart",
+                            cartProductIds = _uiState.value.cartProductIds + productId
                         )
                     }
                     is ResultState.Error -> {

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.localshop.core.auth.SessionManager
 import com.example.localshop.core.result.ResultState
 import com.example.localshop.feature.cart.domain.usecase.AddToCartUseCase
+import com.example.localshop.feature.cart.domain.usecase.GetCartUseCase
 import com.example.localshop.feature.product.domain.usecase.GetProductWithRelatedUseCase
 import com.example.localshop.feature.product.presentation.state.ProductDetailsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class ProductDetailsViewModel @Inject constructor(
     private val getProductWithRelatedUseCase: GetProductWithRelatedUseCase,
     private val addToCartUseCase: AddToCartUseCase,
+    private val getCartUseCase: GetCartUseCase,
     private val sessionManager: SessionManager
 ) : ViewModel() {
     
@@ -28,7 +30,7 @@ class ProductDetailsViewModel @Inject constructor(
     fun loadProductDetails(productId: Int) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            
+
             getProductWithRelatedUseCase(productId).collect { result ->
                 when (result) {
                     is ResultState.Success -> {
@@ -36,6 +38,8 @@ class ProductDetailsViewModel @Inject constructor(
                             productDetails = result.data,
                             isLoading = false
                         )
+                        // Check if product is in cart
+                        checkIfProductInCart(productId)
                     }
                     is ResultState.Error -> {
                         _uiState.value = _uiState.value.copy(
@@ -45,6 +49,26 @@ class ProductDetailsViewModel @Inject constructor(
                     }
                     ResultState.Loading -> {
                         // Keep loading state
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkIfProductInCart(productId: Int) {
+        viewModelScope.launch {
+            getCartUseCase().collect { result ->
+                when (result) {
+                    is ResultState.Success -> {
+                        val cartProductIds = result.data.items.map { it.productId }.toSet()
+                        val isInCart = cartProductIds.contains(productId)
+                        _uiState.value = _uiState.value.copy(
+                            isInCart = isInCart,
+                            cartProductIds = cartProductIds
+                        )
+                    }
+                    else -> {
+                        // Ignore errors for cart check
                     }
                 }
             }
@@ -60,14 +84,16 @@ class ProductDetailsViewModel @Inject constructor(
     fun addToCart(productId: Int, quantity: Int = 1) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isAddingToCart = true)
-            
+
             addToCartUseCase(productId, quantity).collect { result ->
                 when (result) {
                     is ResultState.Success -> {
                         _uiState.value = _uiState.value.copy(
                             isAddingToCart = false,
                             addToCartSuccess = true,
-                            addToCartMessage = "Item added to cart"
+                            addToCartMessage = "Item added to cart",
+                            isInCart = true,
+                            cartProductIds = _uiState.value.cartProductIds + productId
                         )
                     }
                     is ResultState.Error -> {

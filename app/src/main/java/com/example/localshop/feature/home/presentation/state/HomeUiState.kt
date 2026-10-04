@@ -16,5 +16,6 @@ data class HomeUiState(
     val errorMessage: String? = null,
     val isAddingToCart: Boolean = false,
     val addToCartSuccess: Boolean = false,
-    val addToCartMessage: String? = null
+    val addToCartMessage: String? = null,
+    val cartProductIds: Set<Int> = emptySet()
 )

@@ -170,7 +170,11 @@ fun ProductDetailsScreen(
                                 Button(
                                     onClick = {
                                         if (isLoggedIn) {
-                                            viewModel.addToCart(productDetails.product.id)
+                                            if (uiState.isInCart) {
+                                                navController.navigate(Screen.Cart.route)
+                                            } else {
+                                                viewModel.addToCart(productDetails.product.id)
+                                            }
                                         } else {
                                             navController.navigate(Screen.Login.route)
                                         }
@@ -184,7 +188,12 @@ fun ProductDetailsScreen(
                                     shape = RoundedCornerShape(12.dp)
                                 ) {
                                     Text(
-                                        text = if (uiState.isAddingToCart) "Adding..." else if (inStock) "Add to Cart" else "Out of Stock",
+                                        text = when {
+                                            uiState.isAddingToCart -> "Adding..."
+                                            uiState.isInCart -> "Go to Cart"
+                                            inStock -> "Add to Cart"
+                                            else -> "Out of Stock"
+                                        },
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -240,12 +249,31 @@ fun ProductDetailsScreen(
                                             price = product.price,
                                             discountPrice = product.discountPrice,
                                             imageUrl = product.imageUrl,
+                                            isInCart = uiState.cartProductIds.contains(product.id),
                                             rating = product.rating,
                                             reviewCount = product.reviewsCount,
                                             inStock = (product.stock ?: 0) > 0,
                                             modifier = Modifier.width(160.dp),
                                             onProductClick = {
                                                 navController.navigate(Screen.ProductDetails.createRoute(product.id))
+                                            },
+                                            onAddToCartClick = {
+                                                if (isLoggedIn) {
+                                                    if (uiState.cartProductIds.contains(product.id)) {
+                                                        navController.navigate(Screen.Cart.route)
+                                                    } else {
+                                                        viewModel.addToCart(product.id)
+                                                    }
+                                                } else {
+                                                    navController.navigate(Screen.Login.route)
+                                                }
+                                            },
+                                            onBuyNowClick = {
+                                                if (isLoggedIn) {
+                                                    navController.navigate(Screen.CheckoutBuyNow.createRoute(product.id))
+                                                } else {
+                                                    navController.navigate(Screen.Login.route)
+                                                }
                                             }
                                         )
                                     }

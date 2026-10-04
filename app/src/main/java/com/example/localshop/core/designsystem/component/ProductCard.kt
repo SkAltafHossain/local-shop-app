@@ -43,6 +43,7 @@ fun ProductCard(
     discountPrice: Double? = null,
     imageUrl: String? = null,
     isInWishlist: Boolean = false,
+    isInCart: Boolean = false,
     rating: Double? = null,
     reviewCount: Int? = null,
     inStock: Boolean = true,
@@ -207,7 +208,7 @@ fun ProductCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(3.dp)
                 ) {
-                    // Add to Cart button
+                    // Add to Cart / Go to Cart button
                     androidx.compose.material3.Button(
                         onClick = { onAddToCartClick?.invoke() },
                         modifier = Modifier.weight(1f),
@@ -222,7 +223,7 @@ fun ProductCard(
                         shape = RoundedCornerShape(6.dp)
                     ) {
                         Text(
-                            "ADD TO CART",
+                            if (isInCart) "GO TO CART" else "ADD TO CART",
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold
                         )
