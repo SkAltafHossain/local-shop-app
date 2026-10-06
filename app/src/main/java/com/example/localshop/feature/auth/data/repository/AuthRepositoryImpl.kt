@@ -206,15 +206,53 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
     
-    override fun updateUser(name: String?, email: String?, phone: String?): Flow<ResultState<User>> = flow {
+    override fun updateUser(name: String?): Flow<ResultState<User>> = flow {
         emit(ResultState.Loading)
         try {
-            val request = mutableMapOf<String, String>()
-            name?.let { request["name"] = it }
-            email?.let { request["email"] = it }
-            phone?.let { request["phone"] = it }
-
+            val request = mapOf("name" to (name ?: ""))
             val response = authApi.updateUser(request)
+            if (response.success && response.data != null) {
+                val user = AuthMapper.mapToDomain(response.data)
+                emit(ResultState.Success(user))
+            } else {
+                val errorMessage = extractErrorMessageFromResponse(response)
+                emit(ResultState.Error(errorMessage))
+            }
+        } catch (e: Exception) {
+            val errorMessage = extractErrorMessage(e)
+            emit(ResultState.Error(errorMessage))
+        }
+    }
+
+    override fun updateEmail(email: String, password: String): Flow<ResultState<User>> = flow {
+        emit(ResultState.Loading)
+        try {
+            val request = mapOf(
+                "email" to email,
+                "password" to password
+            )
+            val response = authApi.updateEmail(request)
+            if (response.success && response.data != null) {
+                val user = AuthMapper.mapToDomain(response.data)
+                emit(ResultState.Success(user))
+            } else {
+                val errorMessage = extractErrorMessageFromResponse(response)
+                emit(ResultState.Error(errorMessage))
+            }
+        } catch (e: Exception) {
+            val errorMessage = extractErrorMessage(e)
+            emit(ResultState.Error(errorMessage))
+        }
+    }
+
+    override fun updatePhone(phone: String, password: String): Flow<ResultState<User>> = flow {
+        emit(ResultState.Loading)
+        try {
+            val request = mapOf(
+                "phone" to phone,
+                "password" to password
+            )
+            val response = authApi.updatePhone(request)
             if (response.success && response.data != null) {
                 val user = AuthMapper.mapToDomain(response.data)
                 emit(ResultState.Success(user))
@@ -238,6 +276,24 @@ class AuthRepositoryImpl @Inject constructor(
             )
             val response = authApi.updatePassword(request)
             if (response.success) {
+                emit(ResultState.Success(Unit))
+            } else {
+                val errorMessage = extractErrorMessageFromResponse(response)
+                emit(ResultState.Error(errorMessage))
+            }
+        } catch (e: Exception) {
+            val errorMessage = extractErrorMessage(e)
+            emit(ResultState.Error(errorMessage))
+        }
+    }
+
+    override fun deleteAccount(password: String): Flow<ResultState<Unit>> = flow {
+        emit(ResultState.Loading)
+        try {
+            val request = mapOf("password" to password)
+            val response = authApi.deleteAccount(request)
+            if (response.success) {
+                tokenProvider.clearToken()
                 emit(ResultState.Success(Unit))
             } else {
                 val errorMessage = extractErrorMessageFromResponse(response)

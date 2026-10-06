@@ -8,6 +8,7 @@ import com.example.localshop.feature.auth.data.remote.dto.ForgotPasswordRequestD
 import com.example.localshop.feature.auth.data.remote.dto.ResetPasswordRequestDto
 import com.example.localshop.feature.auth.data.remote.dto.UserDto
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -30,10 +31,19 @@ interface AuthApi {
     
     @PUT("user")
     suspend fun updateUser(@Body request: Map<String, String>): ApiResponse<UserDto>
-    
+
+    @PUT("user/email")
+    suspend fun updateEmail(@Body request: Map<String, String>): ApiResponse<UserDto>
+
+    @PUT("user/phone")
+    suspend fun updatePhone(@Body request: Map<String, String>): ApiResponse<UserDto>
+
     @PUT("user/password")
     suspend fun updatePassword(@Body request: Map<String, String>): ApiResponse<Unit>
-    
+
+    @DELETE("user")
+    suspend fun deleteAccount(@Body request: Map<String, String>): ApiResponse<Unit>
+
     @POST("logout")
     suspend fun logout(): ApiResponse<Unit>
 }

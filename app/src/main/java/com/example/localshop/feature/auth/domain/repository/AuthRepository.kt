@@ -11,7 +11,10 @@ interface AuthRepository {
     fun forgotPassword(email: String): Flow<ResultState<Unit>>
     fun resetPassword(email: String, token: String, password: String, passwordConfirmation: String): Flow<ResultState<Unit>>
     fun getCurrentUser(): Flow<ResultState<User>>
-    fun updateUser(name: String?, email: String?, phone: String?): Flow<ResultState<User>>
+    fun updateUser(name: String?): Flow<ResultState<User>>
+    fun updateEmail(email: String, password: String): Flow<ResultState<User>>
+    fun updatePhone(phone: String, password: String): Flow<ResultState<User>>
     fun updatePassword(currentPassword: String, newPassword: String, newPasswordConfirmation: String): Flow<ResultState<Unit>>
+    fun deleteAccount(password: String): Flow<ResultState<Unit>>
     fun logout(): Flow<ResultState<Unit>>
 }

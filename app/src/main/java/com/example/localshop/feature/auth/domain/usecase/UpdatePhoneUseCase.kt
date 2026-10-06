@@ -6,10 +6,10 @@ import com.example.localshop.feature.auth.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class UpdateUserProfileUseCase @Inject constructor(
+class UpdatePhoneUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
-    operator fun invoke(name: String): Flow<ResultState<User>> {
-        return repository.updateUser(name)
+    operator fun invoke(phone: String, password: String): Flow<ResultState<User>> {
+        return repository.updatePhone(phone, password)
     }
 }
