@@ -131,7 +131,7 @@ fun LocalShopNavigation(
         }
         
         composable(Screen.OrderDetails.route) { backStackEntry ->
-            val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
+            val orderId = backStackEntry.arguments?.getString("orderId")?.toIntOrNull() ?: 0
             OrderDetailsScreen(navController = navController, orderId = orderId)
         }
         
