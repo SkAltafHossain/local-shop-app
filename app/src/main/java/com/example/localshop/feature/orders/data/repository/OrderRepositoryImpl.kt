@@ -87,4 +87,19 @@ class OrderRepositoryImpl @Inject constructor(
             emit(ResultState.Error(errorMessage))
         }
     }
+
+    override fun downloadBill(orderId: Int): Flow<ResultState<okhttp3.ResponseBody>> = flow {
+        emit(ResultState.Loading)
+        try {
+            val response = cartApi.downloadBill(orderId)
+            if (response.isSuccessful && response.body() != null) {
+                emit(ResultState.Success(response.body()!!))
+            } else {
+                emit(ResultState.Error("Failed to download bill"))
+            }
+        } catch (e: Exception) {
+            val errorMessage = e.message ?: "Failed to download bill"
+            emit(ResultState.Error(errorMessage))
+        }
+    }
 }

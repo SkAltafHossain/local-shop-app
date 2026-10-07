@@ -51,6 +51,9 @@ interface CartApi {
     @GET("orders/{orderId}")
     suspend fun getOrderDetails(@Path("orderId") orderId: Int): ApiResponse<OrderDto>
 
-    @PUT("api/orders/{id}/confirm-delivery")
+    @PUT("orders/{id}/confirm-delivery")
     suspend fun confirmDelivered(@Path("id") orderId: Int): ApiResponse<Unit>
+
+    @GET("orders/{id}/download")
+    suspend fun downloadBill(@Path("id") orderId: Int): retrofit2.Response<okhttp3.ResponseBody>
 }
