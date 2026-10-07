@@ -2,12 +2,14 @@ package com.example.localshop.core.common
 
 object Constants {
     const val BASE_URL = "https://living-chariot-recycling.ngrok-free.dev/api/"
+    const val WEB_BASE_URL = "https://living-chariot-recycling.ngrok-free.dev/"
     const val IMAGE_BASE_URL = "https://living-chariot-recycling.ngrok-free.dev/storage/"
     const val PREF_NAME = "localshop_prefs"
     const val KEY_AUTH_TOKEN = "auth_token"
     const val KEY_USER_ID = "user_id"
     const val KEY_USER_NAME = "user_name"
     const val KEY_USER_EMAIL = "user_email"
+    const val KEY_DARK_MODE = "dark_mode"
 
     const val DEFAULT_PAGE_SIZE = 12
     const val CONNECTION_TIMEOUT = 30L

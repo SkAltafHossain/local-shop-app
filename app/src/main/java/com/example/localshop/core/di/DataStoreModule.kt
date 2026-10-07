@@ -7,6 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.example.localshop.core.common.Constants
 import com.example.localshop.core.network.TokenProvider
 import com.example.localshop.core.network.TokenProviderImpl
+import com.example.localshop.core.preferences.ThemePreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,5 +31,11 @@ object DataStoreModule {
     @Singleton
     fun provideTokenProvider(dataStore: DataStore<Preferences>): TokenProvider {
         return TokenProviderImpl(dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideThemePreferences(dataStore: DataStore<Preferences>): ThemePreferences {
+        return ThemePreferences(dataStore)
     }
 }
