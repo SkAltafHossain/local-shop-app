@@ -30,20 +30,27 @@ class SearchViewModel @Inject constructor(
     val isLoggedIn = sessionManager.isLoggedIn
 
     init {
-        loadCart()
+        loadCartIfLoggedIn()
     }
 
-    private fun loadCart() {
+    private fun loadCartIfLoggedIn() {
         viewModelScope.launch {
-            getCartUseCase().collect { result ->
-                when (result) {
-                    is ResultState.Success -> {
-                        val cartProductIds = result.data.items.map { it.productId }.toSet()
-                        _uiState.value = _uiState.value.copy(cartProductIds = cartProductIds)
+            sessionManager.isLoggedIn.collect { isLoggedIn ->
+                if (isLoggedIn) {
+                    getCartUseCase().collect { result ->
+                        when (result) {
+                            is ResultState.Success -> {
+                                val cartProductIds = result.data.items.map { it.productId }.toSet()
+                                _uiState.value = _uiState.value.copy(cartProductIds = cartProductIds)
+                            }
+                            else -> {
+                                // Ignore errors for cart
+                            }
+                        }
                     }
-                    else -> {
-                        // Ignore errors for cart
-                    }
+                } else {
+                    // Clear cart product IDs if not logged in
+                    _uiState.value = _uiState.value.copy(cartProductIds = emptySet())
                 }
             }
         }
@@ -68,9 +75,9 @@ class SearchViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(searchResults = emptyList())
             return
         }
-        
+
         viewModelScope.launch {
-            loadCart()
+            loadCartIfLoggedIn()
             _uiState.value = _uiState.value.copy(isLoading = true)
             
             searchProductsUseCase(query, perPage = 20).collect { result ->

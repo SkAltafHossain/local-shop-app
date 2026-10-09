@@ -57,19 +57,29 @@ class ProductDetailsViewModel @Inject constructor(
 
     private fun checkIfProductInCart(productId: Int) {
         viewModelScope.launch {
-            getCartUseCase().collect { result ->
-                when (result) {
-                    is ResultState.Success -> {
-                        val cartProductIds = result.data.items.map { it.productId }.toSet()
-                        val isInCart = cartProductIds.contains(productId)
-                        _uiState.value = _uiState.value.copy(
-                            isInCart = isInCart,
-                            cartProductIds = cartProductIds
-                        )
+            sessionManager.isLoggedIn.collect { isLoggedIn ->
+                if (isLoggedIn) {
+                    getCartUseCase().collect { result ->
+                        when (result) {
+                            is ResultState.Success -> {
+                                val cartProductIds = result.data.items.map { it.productId }.toSet()
+                                val isInCart = cartProductIds.contains(productId)
+                                _uiState.value = _uiState.value.copy(
+                                    isInCart = isInCart,
+                                    cartProductIds = cartProductIds
+                                )
+                            }
+                            else -> {
+                                // Ignore errors for cart check
+                            }
+                        }
                     }
-                    else -> {
-                        // Ignore errors for cart check
-                    }
+                } else {
+                    // Clear cart data if not logged in
+                    _uiState.value = _uiState.value.copy(
+                        isInCart = false,
+                        cartProductIds = emptySet()
+                    )
                 }
             }
         }

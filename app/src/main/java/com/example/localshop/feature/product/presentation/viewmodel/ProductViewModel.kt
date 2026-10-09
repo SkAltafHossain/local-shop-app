@@ -32,34 +32,41 @@ class ProductViewModel @Inject constructor(
     
     init {
         // Don't load by default - let the screen specify what to load
-        loadCart()
+        loadCartIfLoggedIn()
     }
 
-    private fun loadCart() {
+    private fun loadCartIfLoggedIn() {
         viewModelScope.launch {
-            getCartUseCase().collect { result ->
-                when (result) {
-                    is ResultState.Success -> {
-                        val cartProductIds = result.data.items.map { it.productId }.toSet()
-                        _uiState.value = _uiState.value.copy(cartProductIds = cartProductIds)
+            sessionManager.isLoggedIn.collect { isLoggedIn ->
+                if (isLoggedIn) {
+                    getCartUseCase().collect { result ->
+                        when (result) {
+                            is ResultState.Success -> {
+                                val cartProductIds = result.data.items.map { it.productId }.toSet()
+                                _uiState.value = _uiState.value.copy(cartProductIds = cartProductIds)
+                            }
+                            else -> {
+                                // Ignore errors for cart
+                            }
+                        }
                     }
-                    else -> {
-                        // Ignore errors for cart
-                    }
+                } else {
+                    // Clear cart product IDs if not logged in
+                    _uiState.value = _uiState.value.copy(cartProductIds = emptySet())
                 }
             }
         }
     }
     
     fun loadProducts() {
-        loadCart()
+        loadCartIfLoggedIn()
         loadProducts(ProductFilters())
     }
-    
+
     fun loadProducts(filters: ProductFilters, reset: Boolean = true) {
         viewModelScope.launch {
             if (reset) {
-                loadCart()
+                loadCartIfLoggedIn()
             }
             currentFilters = if (reset) filters else currentFilters.copy(page = filters.page)
             
@@ -111,12 +118,12 @@ class ProductViewModel @Inject constructor(
     }
     
     fun loadLatestProducts() {
-        loadCart()
+        loadCartIfLoggedIn()
         loadProducts(ProductFilters(isNew = true))
     }
-    
+
     fun loadFeaturedProducts() {
-        loadCart()
+        loadCartIfLoggedIn()
         loadProducts(ProductFilters(isFeatured = true))
     }
     

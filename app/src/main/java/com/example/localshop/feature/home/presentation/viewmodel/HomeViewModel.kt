@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,20 +34,27 @@ class HomeViewModel @Inject constructor(
     
     init {
         loadHomeData()
-        loadCart()
+        loadCartIfLoggedIn()
     }
 
-    private fun loadCart() {
+    private fun loadCartIfLoggedIn() {
         viewModelScope.launch {
-            getCartUseCase().collect { result ->
-                when (result) {
-                    is ResultState.Success -> {
-                        val cartProductIds = result.data.items.map { it.productId }.toSet()
-                        _uiState.value = _uiState.value.copy(cartProductIds = cartProductIds)
+            sessionManager.isLoggedIn.collect { isLoggedIn ->
+                if (isLoggedIn) {
+                    getCartUseCase().collect { result ->
+                        when (result) {
+                            is ResultState.Success -> {
+                                val cartProductIds = result.data.items.map { it.productId }.toSet()
+                                _uiState.value = _uiState.value.copy(cartProductIds = cartProductIds)
+                            }
+                            else -> {
+                                // Ignore errors for cart
+                            }
+                        }
                     }
-                    else -> {
-                        // Ignore errors for cart
-                    }
+                } else {
+                    // Clear cart product IDs if not logged in
+                    _uiState.value = _uiState.value.copy(cartProductIds = emptySet())
                 }
             }
         }
@@ -120,11 +128,21 @@ class HomeViewModel @Inject constructor(
     
     fun refresh() {
         loadHomeData()
-        loadCart()
+        loadCartIfLoggedIn()
     }
     
     fun addToCart(productId: Int, quantity: Int = 1) {
         viewModelScope.launch {
+            val loggedIn = sessionManager.isLoggedIn.first()
+            if (!loggedIn) {
+                _uiState.value = _uiState.value.copy(
+                    isAddingToCart = false,
+                    addToCartSuccess = false,
+                    addToCartMessage = "Please login to add items to cart"
+                )
+                return@launch
+            }
+
             _uiState.value = _uiState.value.copy(isAddingToCart = true)
 
             addToCartUseCase(productId, quantity).collect { result ->
