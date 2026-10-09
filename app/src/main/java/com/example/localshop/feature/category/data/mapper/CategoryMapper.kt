@@ -6,8 +6,13 @@ import com.example.localshop.feature.category.domain.model.Category
 
 object CategoryMapper {
     fun mapToDomain(dto: CategoryDto): Category {
-        val fullImageUrl = if (dto.imageUrl != null) {
-            "${Constants.IMAGE_BASE_URL}${dto.imageUrl}"
+        val fullImageUrl = if (!dto.imageUrl.isNullOrBlank()) {
+            // Check if it's already a full URL
+            if (dto.imageUrl.startsWith("http://") || dto.imageUrl.startsWith("https://")) {
+                dto.imageUrl
+            } else {
+                "${Constants.IMAGE_BASE_URL}${dto.imageUrl}"
+            }
         } else {
             null
         }
