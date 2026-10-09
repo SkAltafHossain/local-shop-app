@@ -10,6 +10,9 @@ import com.example.localshop.feature.home.domain.usecase.GetHomeDataUseCase
 import com.example.localshop.feature.home.domain.usecase.GetShopInfoUseCase
 import com.example.localshop.feature.home.domain.usecase.GetShopSettingsUseCase
 import com.example.localshop.feature.home.presentation.state.HomeUiState
+import com.example.localshop.feature.wishlist.domain.usecase.AddToWishlistUseCase
+import com.example.localshop.feature.wishlist.domain.usecase.GetWishlistUseCase
+import com.example.localshop.feature.wishlist.domain.usecase.RemoveFromWishlistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,6 +28,9 @@ class HomeViewModel @Inject constructor(
     private val getHomeDataUseCase: GetHomeDataUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val getCartUseCase: GetCartUseCase,
+    private val getWishlistUseCase: GetWishlistUseCase,
+    private val addToWishlistUseCase: AddToWishlistUseCase,
+    private val removeFromWishlistUseCase: RemoveFromWishlistUseCase,
     private val sessionManager: SessionManager
 ) : ViewModel() {
     
@@ -35,6 +41,7 @@ class HomeViewModel @Inject constructor(
     init {
         loadHomeData()
         loadCartIfLoggedIn()
+        loadWishlistIfLoggedIn()
     }
 
     private fun loadCartIfLoggedIn() {
@@ -55,6 +62,39 @@ class HomeViewModel @Inject constructor(
                 } else {
                     // Clear cart product IDs if not logged in
                     _uiState.value = _uiState.value.copy(cartProductIds = emptySet())
+                }
+            }
+        }
+    }
+
+    private fun loadWishlistIfLoggedIn() {
+        viewModelScope.launch {
+            sessionManager.isLoggedIn.collect { isLoggedIn ->
+                if (isLoggedIn) {
+                    getWishlistUseCase().collect { result ->
+                        when (result) {
+                            is ResultState.Success -> {
+                                val wishlistProductIds = result.data.items.map { it.productId }.toSet()
+                                val wishlistItems = result.data.items.associate { it.productId to it.id }
+                                _uiState.value = _uiState.value.copy(
+                                    wishlistProductIds = wishlistProductIds,
+                                    wishlistItems = wishlistItems
+                                )
+                            }
+                            is ResultState.Error -> {
+                                println("Error loading wishlist: ${result.message}")
+                            }
+                            ResultState.Loading -> {
+                                // Loading state
+                            }
+                        }
+                    }
+                } else {
+                    // Clear wishlist product IDs if not logged in
+                    _uiState.value = _uiState.value.copy(
+                        wishlistProductIds = emptySet(),
+                        wishlistItems = emptyMap()
+                    )
                 }
             }
         }
@@ -129,6 +169,7 @@ class HomeViewModel @Inject constructor(
     fun refresh() {
         loadHomeData()
         loadCartIfLoggedIn()
+        loadWishlistIfLoggedIn()
     }
     
     fun addToCart(productId: Int, quantity: Int = 1) {
@@ -175,5 +216,56 @@ class HomeViewModel @Inject constructor(
             addToCartMessage = null,
             addToCartSuccess = false
         )
+    }
+
+    fun addToWishlist(productId: Int) {
+        viewModelScope.launch {
+            val loggedIn = sessionManager.isLoggedIn.first()
+            if (!loggedIn) {
+                return@launch
+            }
+
+            addToWishlistUseCase(productId).collect { result ->
+                when (result) {
+                    is ResultState.Success -> {
+                        // Reload wishlist to get updated data
+                        loadWishlistIfLoggedIn()
+                    }
+                    is ResultState.Error -> {
+                        println("Error adding to wishlist: ${result.message}")
+                    }
+                    ResultState.Loading -> {
+                        // Loading state
+                    }
+                }
+            }
+        }
+    }
+
+    fun removeFromWishlist(productId: Int) {
+        viewModelScope.launch {
+            val loggedIn = sessionManager.isLoggedIn.first()
+            if (!loggedIn) {
+                return@launch
+            }
+
+            val wishlistItemId = _uiState.value.wishlistItems[productId]
+            if (wishlistItemId != null) {
+                removeFromWishlistUseCase(wishlistItemId).collect { result ->
+                    when (result) {
+                        is ResultState.Success -> {
+                            // Reload wishlist to get updated data
+                            loadWishlistIfLoggedIn()
+                        }
+                        is ResultState.Error -> {
+                            println("Error removing from wishlist: ${result.message}")
+                        }
+                        ResultState.Loading -> {
+                            // Loading state
+                        }
+                    }
+                }
+            }
+        }
     }
 }

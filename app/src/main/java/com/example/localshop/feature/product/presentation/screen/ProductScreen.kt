@@ -202,6 +202,7 @@ fun ProductScreen(
                             price = product.price,
                             discountPrice = product.discountPrice,
                             imageUrl = product.imageUrl,
+                            isInWishlist = uiState.wishlistProductIds.contains(product.id),
                             isInCart = uiState.cartProductIds.contains(product.id),
                             rating = product.rating,
                             reviewCount = product.reviewsCount,
@@ -211,6 +212,17 @@ fun ProductScreen(
                                 navController.navigate(
                                     Screen.ProductDetails.createRoute(product.id)
                                 )
+                            },
+                            onWishlistClick = {
+                                if (isLoggedIn) {
+                                    if (uiState.wishlistProductIds.contains(product.id)) {
+                                        productViewModel.removeFromWishlist(product.id)
+                                    } else {
+                                        productViewModel.addToWishlist(product.id)
+                                    }
+                                } else {
+                                    navController.navigate(Screen.Login.route)
+                                }
                             },
                             onAddToCartClick = {
                                 if (isLoggedIn) {

@@ -10,5 +10,7 @@ data class ProductDetailsUiState(
     val addToCartSuccess: Boolean = false,
     val addToCartMessage: String? = null,
     val isInCart: Boolean = false,
-    val cartProductIds: Set<Int> = emptySet()
+    val cartProductIds: Set<Int> = emptySet(),
+    val isInWishlist: Boolean = false,
+    val wishlistItemId: Int? = null
 )

@@ -10,5 +10,7 @@ data class SearchUiState(
     val isAddingToCart: Boolean = false,
     val addToCartSuccess: Boolean = false,
     val addToCartMessage: String? = null,
-    val cartProductIds: Set<Int> = emptySet()
+    val cartProductIds: Set<Int> = emptySet(),
+    val wishlistProductIds: Set<Int> = emptySet(),
+    val wishlistItems: Map<Int, Int> = emptyMap() // productId to wishlistItemId
 )

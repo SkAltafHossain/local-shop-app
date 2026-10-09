@@ -162,6 +162,7 @@ fun HomeScreen(
                                     price = product.price,
                                     discountPrice = product.discountPrice,
                                     imageUrl = product.imageUrl,
+                                    isInWishlist = uiState.wishlistProductIds.contains(product.id),
                                     isInCart = uiState.cartProductIds.contains(product.id),
                                     rating = product.rating,
                                     reviewCount = product.reviewsCount,
@@ -171,6 +172,17 @@ fun HomeScreen(
                                         navController.navigate(
                                             Screen.ProductDetails.createRoute(product.id)
                                         )
+                                    },
+                                    onWishlistClick = {
+                                        if (isLoggedIn) {
+                                            if (uiState.wishlistProductIds.contains(product.id)) {
+                                                viewModel.removeFromWishlist(product.id)
+                                            } else {
+                                                viewModel.addToWishlist(product.id)
+                                            }
+                                        } else {
+                                            navController.navigate(Screen.Login.route)
+                                        }
                                     },
                                     onAddToCartClick = {
                                         if (isLoggedIn) {
@@ -233,6 +245,7 @@ fun HomeScreen(
                                     price = product.price,
                                     discountPrice = product.discountPrice,
                                     imageUrl = product.imageUrl,
+                                    isInWishlist = uiState.wishlistProductIds.contains(product.id),
                                     isInCart = uiState.cartProductIds.contains(product.id),
                                     rating = product.rating,
                                     reviewCount = product.reviewsCount,
@@ -242,6 +255,17 @@ fun HomeScreen(
                                         navController.navigate(
                                             Screen.ProductDetails.createRoute(product.id)
                                         )
+                                    },
+                                    onWishlistClick = {
+                                        if (isLoggedIn) {
+                                            if (uiState.wishlistProductIds.contains(product.id)) {
+                                                viewModel.removeFromWishlist(product.id)
+                                            } else {
+                                                viewModel.addToWishlist(product.id)
+                                            }
+                                        } else {
+                                            navController.navigate(Screen.Login.route)
+                                        }
                                     },
                                     onAddToCartClick = {
                                         if (isLoggedIn) {
@@ -304,6 +328,7 @@ fun HomeScreen(
                                     price = product.price,
                                     discountPrice = product.discountPrice,
                                     imageUrl = product.imageUrl,
+                                    isInWishlist = uiState.wishlistProductIds.contains(product.id),
                                     isInCart = uiState.cartProductIds.contains(product.id),
                                     rating = product.rating,
                                     reviewCount = product.reviewsCount,
@@ -313,6 +338,17 @@ fun HomeScreen(
                                         navController.navigate(
                                             Screen.ProductDetails.createRoute(product.id)
                                         )
+                                    },
+                                    onWishlistClick = {
+                                        if (isLoggedIn) {
+                                            if (uiState.wishlistProductIds.contains(product.id)) {
+                                                viewModel.removeFromWishlist(product.id)
+                                            } else {
+                                                viewModel.addToWishlist(product.id)
+                                            }
+                                        } else {
+                                            navController.navigate(Screen.Login.route)
+                                        }
                                     },
                                     onAddToCartClick = {
                                         if (isLoggedIn) {

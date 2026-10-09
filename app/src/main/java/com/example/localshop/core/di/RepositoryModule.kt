@@ -14,6 +14,8 @@ import com.example.localshop.feature.home.domain.repository.HomeRepository
 import com.example.localshop.feature.home.domain.repository.ShopRepository
 import com.example.localshop.feature.product.data.repository.ProductRepositoryImpl
 import com.example.localshop.feature.product.domain.repository.ProductRepository
+import com.example.localshop.feature.wishlist.data.repository.WishlistRepositoryImpl
+import com.example.localshop.feature.wishlist.domain.repository.WishlistRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -65,4 +67,10 @@ abstract class RepositoryModule {
     abstract fun bindCheckoutRepository(
         checkoutRepositoryImpl: CheckoutRepositoryImpl
     ): CheckoutRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindWishlistRepository(
+        wishlistRepositoryImpl: WishlistRepositoryImpl
+    ): WishlistRepository
 }

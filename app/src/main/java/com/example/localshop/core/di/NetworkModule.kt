@@ -10,6 +10,7 @@ import com.example.localshop.feature.cart.data.remote.CartApi
 import com.example.localshop.feature.category.data.remote.CategoryApi
 import com.example.localshop.feature.home.data.remote.ShopApi
 import com.example.localshop.feature.product.data.remote.ProductApi
+import com.example.localshop.feature.wishlist.data.remote.WishlistApi
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -117,6 +118,12 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideAddressApi(retrofit: Retrofit): AddressApi {
+        return retrofit.create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideWishlistApi(retrofit: Retrofit): WishlistApi {
         return retrofit.create()
     }
 }
